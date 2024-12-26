@@ -14,6 +14,7 @@ import GameDetails from './pages/GameDetails';
 import Cart from './pages/Cart';
 import Message from './pages/Message';
 import Article from './pages/Article';
+import FriendProfile from './pages/FriendProfile';
 
 // Create a dark theme
 const theme = extendTheme({
@@ -112,7 +113,7 @@ const theme = extendTheme({
   }
 });
 
-const App = () => {
+function App() {
   return (
     <ChakraProvider theme={theme}>
       <Router>
@@ -130,14 +131,15 @@ const App = () => {
               <Route path="/settings" element={<Settings />} />
               <Route path="/game/:id" element={<GameDetails />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/message/:id" element={<Message />} />
+              <Route path="/message" element={<Message />} />
               <Route path="/article/:id" element={<Article />} />
+              <Route path="/friend/:id" element={<FriendProfile />} />
             </Routes>
           </Box>
         </Box>
       </Router>
     </ChakraProvider>
   );
-};
+}
 
 export default App;

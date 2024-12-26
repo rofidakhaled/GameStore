@@ -49,7 +49,7 @@ const Friends = () => {
   ];
 
   const handleMessage = (friendId) => {
-    navigate(`/message/${friendId}`);
+    navigate('/message');
   };
 
   return (
@@ -82,6 +82,10 @@ const Friends = () => {
               p={4}
               borderRadius="lg"
               boxShadow="md"
+              cursor="pointer"
+              onClick={() => navigate(`/friend/${friend.id}`)}
+              transition="transform 0.2s"
+              _hover={{ transform: 'translateY(-2px)' }}
             >
               <HStack spacing={4}>
                 <Avatar

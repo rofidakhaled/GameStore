@@ -25,7 +25,6 @@ import {
   ModalCloseButton,
   useDisclosure,
   Textarea,
-  Flex,
   ButtonGroup,
 } from '@chakra-ui/react';
 import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaEdit, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -51,16 +50,16 @@ const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
         <ModalBody pb={6}>
           <VStack spacing={4}>
             <HStack spacing={2}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Button
-                  key={star}
-                  variant="ghost"
-                  color={star <= rating ? "yellow.400" : "gray.400"}
-                  onClick={() => setRating(star)}
-                  p={0}
-                >
-                  <Icon as={FaStar} boxSize={6} />
-                </Button>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <Icon
+                  key={value}
+                  as={FaStar}
+                  color={value <= rating ? 'yellow.400' : 'gray.300'}
+                  cursor="pointer"
+                  onClick={() => setRating(value)}
+                  w={6}
+                  h={6}
+                />
               ))}
             </HStack>
             <Textarea
@@ -68,17 +67,10 @@ const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
               onChange={(e) => setReview(e.target.value)}
               placeholder="Write your review..."
               bg="gray.700"
-              color="whiteAlpha.900"
-              _placeholder={{ color: "gray.400" }}
-              borderColor="gray.600"
-              _hover={{ borderColor: "gray.500" }}
-              _focus={{ borderColor: "blue.300", boxShadow: "none" }}
+              border="none"
+              _focus={{ bg: 'gray.700', border: '1px solid', borderColor: 'blue.500' }}
             />
-            <Button
-              colorScheme="blue"
-              width="100%"
-              onClick={handleSubmit}
-            >
+            <Button colorScheme="blue" onClick={handleSubmit}>
               Submit Review
             </Button>
           </VStack>
@@ -258,6 +250,7 @@ const Store = () => {
               transition="transform 0.2s"
               _hover={{ transform: 'translateY(-4px)' }}
               cursor="pointer"
+              onClick={() => navigate(`/game/${game.id}`)}
             >
               <Box position="relative">
                 <Image
@@ -295,7 +288,7 @@ const Store = () => {
                   <Text color="gray.400">({game.reviews} reviews)</Text>
                 </HStack>
 
-                <Flex justify="space-between" align="center" mt={4}>
+                <HStack justify="space-between" mt={4}>
                   <HStack spacing={2}>
                     {game.discount > 0 ? (
                       <>
@@ -339,7 +332,7 @@ const Store = () => {
                       _hover={{ color: 'blue.500' }}
                     />
                   </HStack>
-                </Flex>
+                </HStack>
               </Box>
             </Box>
           ))}

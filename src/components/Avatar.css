@@ -1,0 +1,24 @@
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-image {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-container.small .avatar-image {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar-container.medium .avatar-image {
+  width: 40px;
+  height: 40px;
+}
+
+.avatar-container.large .avatar-image {
+  width: 48px;
+  height: 48px;
+}

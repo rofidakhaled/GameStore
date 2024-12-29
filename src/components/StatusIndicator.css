@@ -1,0 +1,17 @@
+.status-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.status-indicator.online {
+  background-color: #44b700;
+}
+
+.status-indicator.offline {
+  background-color: #999;
+}

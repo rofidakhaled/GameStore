@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { FaDownload, FaPlay, FaClock, FaStar } from 'react-icons/fa';
+import SearchInput from '../components/SearchInput';
+import FilterButton from '../components/FilterButton';
+import GameCard from '../components/GameCard';
 import '../styles/Library.css';
 
 const Library = () => {
@@ -68,25 +71,20 @@ const Library = () => {
   return (
     <div className="library-container">
       <aside className="library-sidebar">
-        <div className="search-section">
-          <input
-            type="text"
-            placeholder="Search games..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search games..."
+        />
 
         <nav className="filter-nav">
           {filters.map((filter) => (
-            <button
+            <FilterButton
               key={filter.id}
-              className={`filter-button ${activeFilter === filter.id ? 'active' : ''}`}
+              label={filter.label}
+              active={activeFilter === filter.id}
               onClick={() => setActiveFilter(filter.id)}
-            >
-              {filter.label}
-            </button>
+            />
           ))}
         </nav>
 
@@ -109,48 +107,12 @@ const Library = () => {
 
         <div className="games-grid">
           {filteredGames.map((game) => (
-            <div key={game.id} className="game-card">
-              <div className="game-image">
-                <img src={game.image} alt={game.title} />
-                <div className="game-actions">
-                  {game.installed ? (
-                    <button className="action-button primary">
-                      <FaPlay />
-                      <span>Play</span>
-                    </button>
-                  ) : (
-                    <button className="action-button">
-                      <FaDownload />
-                      <span>Install</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="game-info">
-                <h3>{game.title}</h3>
-                
-                <div className="game-meta">
-                  <div className="meta-item">
-                    <FaClock className="meta-icon" />
-                    <span>{game.playtime} hours played</span>
-                  </div>
-                  <div className="meta-item">
-                    <FaStar className="meta-icon" />
-                    <span>
-                      {game.achievements}/{game.totalAchievements} achievements
-                    </span>
-                  </div>
-                </div>
-
-                <div className="game-status">
-                  <span className={`status-badge ${game.installed ? 'installed' : 'not-installed'}`}>
-                    {game.status}
-                  </span>
-                  <span className="last-played">Last played: {game.lastPlayed}</span>
-                </div>
-              </div>
-            </div>
+            <GameCard
+              key={game.id}
+              game={game}
+              variant="library"
+              showActions={false}
+            />
           ))}
         </div>
       </main>

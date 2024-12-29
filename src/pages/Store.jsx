@@ -4,6 +4,7 @@ import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaChevronLeft, FaChe
 import axios from 'axios';
 import { gameCoverImages, bannerImages } from '../assets/images';
 import '../styles/Store.css';
+import GameCard from '../components/GameCard';
 
 const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
   const [rating, setRating] = useState(selectedGame?.rating || 0);
@@ -182,60 +183,13 @@ const Store = () => {
 
       <div className="games-grid">
         {paginatedGames.map((game) => (
-          <div
+          <GameCard
             key={game.id}
-            className="game-card"
-            onClick={() => navigate(`/game/${game.id}`)}
-          >
-            <div className="game-image-container">
-              <img className="game-image" src={game.image} alt={game.name} />
-              {game.discount > 0 && (
-                <span className="discount-badge">-{game.discount}%</span>
-              )}
-            </div>
-
-            <div className="store-game-details">
-              <h3 className="game-title">{game.name}</h3>
-              
-              <div className="rating-container">
-                <div className="rating-stars">
-                  <FaStar className="star-icon" />
-                  <span>{game.rating.toFixed(1)}</span>
-                  <span className="reviews-count">({game.reviews} reviews)</span>
-                </div>
-              </div>
-
-              <div className="game-card-footer">
-                <div className="price-tag">
-                  {game.discount > 0 ? (
-                    <>
-                      <span className="original-price">${game.price}</span>
-                      <span className="discounted-price">
-                        ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="discounted-price">${game.price}</span>
-                  )}
-                </div>
-
-                <div className="action-buttons">
-                  <FaShoppingCart
-                    className={`action-icon cart ${cartItems.has(game.id) ? 'active' : ''}`}
-                    onClick={(e) => handleToggleCart(game, e)}
-                  />
-                  <FaHeart
-                    className={`action-icon wishlist ${game.inWishlist ? 'active' : ''}`}
-                    onClick={(e) => handleToggleWishlist(game, e)}
-                  />
-                  <FaStar
-                    className="action-icon rate"
-                    onClick={(e) => handleRateGame(game, e)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+            game={game}
+            onCartToggle={(game) => handleToggleCart(game, { stopPropagation: () => {} })}
+            onWishlistToggle={(game) => handleToggleWishlist(game, { stopPropagation: () => {} })}
+            onRate={(game) => handleRateGame(game, { stopPropagation: () => {} })}
+          />
         ))}
       </div>
 

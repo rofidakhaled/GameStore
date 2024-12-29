@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCalendar, FaTag, FaUser } from 'react-icons/fa';
+import { FaCalendar, FaTag, FaUser, FaSearch } from 'react-icons/fa';
 import '../styles/News.css';
 
 const News = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const newsArticles = [
     {
       id: 1,
@@ -97,7 +98,7 @@ const News = () => {
       id: 9,
       title: 'GTA VI: Vice City Returns',
       image: 'https://via.placeholder.com/600x400?text=GTA+VI',
-      summary: 'First look at the next Grand Theft Auto game.',
+      summary: 'Return to Vice City in this next-generation open-world experience.',
       content: 'Return to Vice City in this next-generation open-world experience.',
       author: 'Jane Smith',
       date: '2023-12-28',
@@ -106,88 +107,87 @@ const News = () => {
     }
   ];
 
-  const categories = [
-    { name: 'All', count: 156 },
-    { name: 'Game Updates', count: 45 },
-    { name: 'Technology', count: 32 },
-    { name: 'Features', count: 28 },
-    { name: 'Reviews', count: 51 }
-  ];
+  const filteredArticles = newsArticles.filter(article => {
+    const searchTerm = searchQuery.toLowerCase();
+    return (
+      article.title.toLowerCase().includes(searchTerm) ||
+      article.summary.toLowerCase().includes(searchTerm) ||
+      article.category.toLowerCase().includes(searchTerm) ||
+      article.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+    );
+  });
 
   return (
     <div className="news-container">
-      <aside className="news-sidebar">
-        <div className="categories-section">
-          <h2>Categories</h2>
-          <ul className="categories-list">
-            {categories.map((category) => (
-              <li key={category.name}>
-                <button className="category-button">
-                  {category.name}
-                  <span className="category-count">{category.count}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <h1 className="news-title-main">Latest News</h1>
+      
+      <div className="news-filters">
+        <div className="filters-row">
+          <div className="search-container">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search news..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
 
-        <div className="popular-tags">
-          <h2>Popular Tags</h2>
-          <div className="tags-list">
-            <span className="tag">RPG</span>
-            <span className="tag">Action</span>
-            <span className="tag">Strategy</span>
-            <span className="tag">Indie</span>
-            <span className="tag">Updates</span>
+          <div className="popular-tags">
+            <h2>Popular Tags:</h2>
+            <div className="tags-list">
+              <span className="tag">RPG</span>
+              <span className="tag">Action</span>
+              <span className="tag">Strategy</span>
+              <span className="tag">Indie</span>
+              <span className="tag">Updates</span>
+            </div>
           </div>
         </div>
-      </aside>
+      </div>
 
-      <main className="news-main">
-        <h1>Latest News</h1>
-        
-        <div className="news-grid">
-          {newsArticles.map((article) => (
-            <article key={article.id} className="news-card">
-              <div className="news-image">
-                <img src={article.image} alt={article.title} />
-                <div className="news-category">{article.category}</div>
+      <div className="news-grid">
+        {filteredArticles.map((article) => (
+          <article key={article.id} className="news-card">
+            <div className="news-image">
+              <img src={article.image} alt={article.title} />
+              <div className="news-category">{article.category}</div>
+            </div>
+            
+            <div className="news-content">
+              <Link to={`/article/${article.id}`} className="news-title">
+                <h2>{article.title}</h2>
+              </Link>
+              
+              <p className="news-summary">{article.summary}</p>
+              
+              <div className="news-meta">
+                <div className="meta-item">
+                  <FaUser className="meta-icon" />
+                  <span>{article.author}</span>
+                </div>
+                <div className="meta-item">
+                  <FaCalendar className="meta-icon" />
+                  <span>{article.date}</span>
+                </div>
+                <div className="meta-item">
+                  <FaTag className="meta-icon" />
+                  <span>{article.tags[0]}</span>
+                </div>
               </div>
               
-              <div className="news-content">
-                <Link to={`/article/${article.id}`} className="news-title">
-                  <h2>{article.title}</h2>
-                </Link>
-                
-                <p className="news-summary">{article.summary}</p>
-                
-                <div className="news-meta">
-                  <div className="meta-item">
-                    <FaUser className="meta-icon" />
-                    <span>{article.author}</span>
-                  </div>
-                  <div className="meta-item">
-                    <FaCalendar className="meta-icon" />
-                    <span>{article.date}</span>
-                  </div>
-                  <div className="meta-item">
-                    <FaTag className="meta-icon" />
-                    <span>{article.tags[0]}</span>
-                  </div>
-                </div>
-                
-                <div className="news-tags">
-                  {article.tags.map((tag, index) => (
-                    <span key={index} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <div className="news-tags">
+                {article.tags.map((tag, index) => (
+                  <span key={index} className="tag">
+                    {tag}
+                  </span>
+                ))}
               </div>
-            </article>
-          ))}
-        </div>
-      </main>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="24" cy="24" r="22" fill="#B7791F"/>
+  
+  <!-- Controller Body -->
+  <path d="M12 20C12 18.8954 12.8954 18 14 18H34C35.1046 18 36 18.8954 36 20V28C36 29.1046 35.1046 30 34 30H14C12.8954 30 12 29.1046 12 28V20Z" fill="#ECC94B"/>
+  
+  <!-- Left Grip -->
+  <circle cx="17" cy="24" r="4" fill="#D69E2E"/>
+  
+  <!-- Right Grip -->
+  <circle cx="31" cy="24" r="4" fill="#D69E2E"/>
+  
+  <!-- D-Pad -->
+  <rect x="15" y="22" width="4" height="4" fill="#FEFCBF"/>
+  <rect x="29" y="22" width="4" height="4" fill="#FEFCBF"/>
+  
+  <!-- Buttons -->
+  <circle cx="31" cy="24" r="1" fill="#FEFCBF"/>
+  <circle cx="33" cy="22" r="1" fill="#FEFCBF"/>
+  <circle cx="29" cy="22" r="1" fill="#FEFCBF"/>
+  <circle cx="31" cy="20" r="1" fill="#FEFCBF"/>
+  
+  <!-- Highlights -->
+  <path d="M14 18.5C13.1716 18.5 12.5 19.1716 12.5 20V28C12.5 28.8284 13.1716 29.5 14 29.5H34C34.8284 29.5 35.5 28.8284 35.5 28V20C35.5 19.1716 34.8284 18.5 34 18.5H14Z" stroke="#F6E05E" stroke-opacity="0.7"/>
+</svg>

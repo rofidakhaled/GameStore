@@ -1,152 +1,187 @@
-import React from 'react';
-import {
-  Box,
-  Container,
-  VStack,
-  HStack,
-  Heading,
-  Text,
-  Image,
-  Button,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Icon,
-  Badge,
-  SimpleGrid,
-  Divider,
-  Avatar,
-} from '@chakra-ui/react';
-import { FaSearch, FaGamepad, FaClock, FaUserPlus, FaComment } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { FaUserFriends, FaGamepad, FaClock, FaCircle, FaPlus, FaSearch } from 'react-icons/fa';
+import '../styles/Friends.css';
 
 const Friends = () => {
-  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('online');
+  const [searchQuery, setSearchQuery] = useState('');
+
   const friends = [
     {
       id: 1,
-      name: 'Alex Gaming',
-      avatar: 'https://via.placeholder.com/100',
-      status: 'Online',
+      name: 'Alex Johnson',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'online',
       currentGame: 'Cyberpunk 2077',
-      playTime: '2 hours',
+      lastSeen: 'Now',
+      level: 42,
+      gamesInCommon: 15,
     },
     {
       id: 2,
-      name: 'Sarah Player',
-      avatar: 'https://via.placeholder.com/100',
-      status: 'In-Game',
-      currentGame: 'Red Dead Redemption 2',
-      playTime: '5 hours',
+      name: 'Sarah Wilson',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'offline',
+      currentGame: null,
+      lastSeen: '2 hours ago',
+      level: 35,
+      gamesInCommon: 8,
     },
     {
       id: 3,
-      name: 'Mike Gamer',
-      avatar: 'https://via.placeholder.com/100',
-      status: 'Offline',
-      lastOnline: '3 hours ago',
+      name: 'Mike Davis',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'online',
+      currentGame: 'Elden Ring',
+      lastSeen: 'Now',
+      level: 28,
+      gamesInCommon: 12,
     },
   ];
 
-  const handleMessage = (friendId) => {
-    navigate('/message');
-  };
+  const friendRequests = [
+    {
+      id: 1,
+      name: 'Emma Thompson',
+      avatar: 'https://via.placeholder.com/40',
+      mutualFriends: 3,
+      level: 15,
+    },
+    {
+      id: 2,
+      name: 'James Wilson',
+      avatar: 'https://via.placeholder.com/40',
+      mutualFriends: 5,
+      level: 23,
+    },
+  ];
+
+  const filteredFriends = friends.filter(friend => {
+    const matchesSearch = friend.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTab = activeTab === 'all' || 
+      (activeTab === 'online' && friend.status === 'online') ||
+      (activeTab === 'offline' && friend.status === 'offline');
+    return matchesSearch && matchesTab;
+  });
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <Heading color="whiteAlpha.900">Friends</Heading>
+    <div className="friends-container">
+      <aside className="friends-sidebar">
+        <div className="search-section">
+          <div className="search-input-wrapper">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search friends..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        </div>
 
-        {/* Search Bar */}
-        <InputGroup>
-          <InputLeftElement pointerEvents="none">
-            <Icon as={FaSearch} color="gray.500" />
-          </InputLeftElement>
-          <Input
-            placeholder="Search friends..."
-            bg="gray.800"
-            color="whiteAlpha.900"
-            _placeholder={{ color: 'gray.400' }}
-            borderColor="gray.600"
-            _hover={{ borderColor: 'gray.500' }}
-            _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-          />
-        </InputGroup>
+        <nav className="friends-nav">
+          <button
+            className={`nav-button ${activeTab === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveTab('all')}
+          >
+            <FaUserFriends />
+            <span>All Friends</span>
+            <span className="count">{friends.length}</span>
+          </button>
+          <button
+            className={`nav-button ${activeTab === 'online' ? 'active' : ''}`}
+            onClick={() => setActiveTab('online')}
+          >
+            <FaCircle className="online-icon" />
+            <span>Online</span>
+            <span className="count">
+              {friends.filter(f => f.status === 'online').length}
+            </span>
+          </button>
+          <button
+            className={`nav-button ${activeTab === 'offline' ? 'active' : ''}`}
+            onClick={() => setActiveTab('offline')}
+          >
+            <FaCircle className="offline-icon" />
+            <span>Offline</span>
+            <span className="count">
+              {friends.filter(f => f.status === 'offline').length}
+            </span>
+          </button>
+        </nav>
 
-        {/* Friends List */}
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-          {friends.map((friend) => (
-            <Box
-              key={friend.id}
-              bg="gray.800"
-              p={4}
-              borderRadius="lg"
-              boxShadow="md"
-              cursor="pointer"
-              onClick={() => navigate(`/friend/${friend.id}`)}
-              transition="transform 0.2s"
-              _hover={{ transform: 'translateY(-2px)' }}
-            >
-              <HStack spacing={4}>
-                <Avatar
-                  size="lg"
-                  src={friend.avatar}
-                  name={friend.name}
-                />
-                <VStack align="start" flex={1} spacing={1}>
-                  <HStack justify="space-between" width="100%">
-                    <Heading size="md" color="whiteAlpha.900">
-                      {friend.name}
-                    </Heading>
-                    <Badge
-                      colorScheme={
-                        friend.status === 'Online'
-                          ? 'green'
-                          : friend.status === 'In-Game'
-                          ? 'blue'
-                          : 'gray'
-                      }
-                    >
-                      {friend.status}
-                    </Badge>
-                  </HStack>
-                  {friend.currentGame ? (
-                    <HStack>
-                      <Icon as={FaGamepad} color="blue.400" />
-                      <Text color="whiteAlpha.700">{friend.currentGame}</Text>
-                      <Icon as={FaClock} color="blue.400" ml={2} />
-                      <Text color="whiteAlpha.700">{friend.playTime}</Text>
-                    </HStack>
-                  ) : (
-                    <Text color="whiteAlpha.600">
-                      Last online: {friend.lastOnline}
-                    </Text>
-                  )}
-                  <HStack spacing={2} mt={2}>
-                    <Button
-                      leftIcon={<Icon as={FaComment} />}
-                      colorScheme="blue"
-                      size="sm"
-                      onClick={() => handleMessage(friend.id)}
-                    >
-                      Message
-                    </Button>
-                    <Button
-                      leftIcon={<Icon as={FaGamepad} />}
-                      colorScheme="green"
-                      size="sm"
-                      isDisabled={friend.status === 'Offline'}
-                    >
-                      Join Game
-                    </Button>
-                  </HStack>
-                </VStack>
-              </HStack>
-            </Box>
+        <div className="friend-requests">
+          <h2>Friend Requests</h2>
+          {friendRequests.map((request) => (
+            <div key={request.id} className="request-card">
+              <img src={request.avatar} alt={request.name} className="avatar" />
+              <div className="request-info">
+                <h3>{request.name}</h3>
+                <p>{request.mutualFriends} mutual friends</p>
+              </div>
+              <div className="request-actions">
+                <button className="accept-button">Accept</button>
+                <button className="decline-button">Decline</button>
+              </div>
+            </div>
           ))}
-        </SimpleGrid>
-      </VStack>
-    </Container>
+        </div>
+      </aside>
+
+      <main className="friends-main">
+        <div className="friends-header">
+          <h1>Friends List</h1>
+          <button className="add-friend-button">
+            <FaPlus />
+            <span>Add Friend</span>
+          </button>
+        </div>
+
+        <div className="friends-list">
+          {filteredFriends.map((friend) => (
+            <div key={friend.id} className="friend-card">
+              <div className="friend-primary">
+                <div className="friend-avatar">
+                  <img src={friend.avatar} alt={friend.name} />
+                  <span className={`status-indicator ${friend.status}`}></span>
+                </div>
+                <div className="friend-info">
+                  <h3>{friend.name}</h3>
+                  <div className="friend-meta">
+                    {friend.status === 'online' && friend.currentGame ? (
+                      <div className="current-game">
+                        <FaGamepad className="meta-icon" />
+                        <span>Playing {friend.currentGame}</span>
+                      </div>
+                    ) : (
+                      <div className="last-seen">
+                        <FaClock className="meta-icon" />
+                        <span>Last online: {friend.lastSeen}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="friend-secondary">
+                <div className="friend-stats">
+                  <div className="stat">
+                    <span className="stat-label">Level</span>
+                    <span className="stat-value">{friend.level}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="stat-label">Games in Common</span>
+                    <span className="stat-value">{friend.gamesInCommon}</span>
+                  </div>
+                </div>
+                <button className="more-options">•••</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
   );
 };
 

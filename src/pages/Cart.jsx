@@ -1,206 +1,169 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  VStack,
-  HStack,
-  Image,
-  Text,
-  Heading,
-  Button,
-  Icon,
-  Divider,
-  useToast,
-  SimpleGrid,
-  Badge
-} from '@chakra-ui/react';
-import { FaTrash, FaShoppingCart } from 'react-icons/fa';
+import { FaTrash, FaCreditCard, FaPaypal, FaGift } from 'react-icons/fa';
+import '../styles/Cart.css';
 
 const Cart = () => {
-  const toast = useToast();
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: 'Starfield',
-      image: 'https://via.placeholder.com/200x150?text=Starfield',
+      title: 'Cyberpunk 2077',
+      image: 'https://via.placeholder.com/150',
       price: 59.99,
-      discount: 20,
-      quantity: 1
+      originalPrice: 59.99,
+      discount: 0,
     },
     {
       id: 2,
-      name: 'Cyberpunk 2077',
-      image: 'https://via.placeholder.com/200x150?text=Cyberpunk+2077',
-      price: 49.99,
-      discount: 0,
-      quantity: 1
+      title: 'Red Dead Redemption 2',
+      image: 'https://via.placeholder.com/150',
+      price: 39.99,
+      originalPrice: 59.99,
+      discount: 33,
     },
     {
       id: 3,
-      name: 'Baldur\'s Gate 3',
-      image: 'https://via.placeholder.com/200x150?text=Baldurs+Gate+3',
-      price: 59.99,
-      discount: 10,
-      quantity: 1
-    }
+      title: 'Elden Ring',
+      image: 'https://via.placeholder.com/150',
+      price: 49.99,
+      originalPrice: 59.99,
+      discount: 17,
+    },
   ]);
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
-    toast({
-      title: 'Item Removed',
-      description: 'The item has been removed from your cart',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  const [promoCode, setPromoCode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('credit-card');
 
-  const handleQuantityChange = (itemId, change) => {
-    setCartItems(cartItems.map(item => {
-      if (item.id === itemId) {
-        const newQuantity = Math.max(1, item.quantity + change);
-        return { ...item, quantity: newQuantity };
-      }
-      return item;
-    }));
+  const removeFromCart = (itemId) => {
+    setCartItems(cartItems.filter(item => item.id !== itemId));
   };
 
   const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => {
-      const itemPrice = item.price * (1 - item.discount / 100);
-      return total + (itemPrice * item.quantity);
-    }, 0);
+    return cartItems.reduce((total, item) => total + item.price, 0);
   };
 
-  const handleCheckout = () => {
-    toast({
-      title: 'Proceeding to Checkout',
-      description: 'Redirecting to payment page...',
-      status: 'info',
-      duration: 3000,
-      isClosable: true,
-    });
+  const calculateTax = () => {
+    return calculateSubtotal() * 0.1; // 10% tax
+  };
+
+  const calculateTotal = () => {
+    return calculateSubtotal() + calculateTax();
   };
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <HStack justify="space-between">
-          <Heading>Shopping Cart ({cartItems.length} items)</Heading>
-        </HStack>
+    <div className="cart-container">
+      <main className="cart-main">
+        <div className="cart-header">
+          <h1>Shopping Cart</h1>
+          <p>{cartItems.length} items in your cart</p>
+        </div>
 
-        {cartItems.length > 0 ? (
-          <SimpleGrid columns={{ base: 1, lg: 3 }} spacing={8}>
-            <Box gridColumn="span 2">
-              <VStack spacing={4} align="stretch" bg="gray.800" p={6} borderRadius="lg" boxShadow="md">
-                {cartItems.map((item, index) => (
-                  <React.Fragment key={item.id}>
-                    {index > 0 && <Divider />}
-                    <HStack spacing={4} py={2}>
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        boxSize="100px"
-                        objectFit="cover"
-                        borderRadius="md"
-                      />
-                      <VStack align="start" flex={1} spacing={1}>
-                        <Heading size="md" color="whiteAlpha.900">{item.name}</Heading>
-                        <HStack>
-                          {item.discount > 0 ? (
-                            <>
-                              <Text textDecoration="line-through" color="gray.400">
-                                ${item.price}
-                              </Text>
-                              <Text color="green.400" fontWeight="bold">
-                                ${(item.price * (1 - item.discount / 100)).toFixed(2)}
-                              </Text>
-                              <Badge colorScheme="green">-{item.discount}%</Badge>
-                            </>
-                          ) : (
-                            <Text fontWeight="bold" color="whiteAlpha.900">${item.price}</Text>
-                          )}
-                        </HStack>
-                      </VStack>
-                      <HStack>
-                        <Button
-                          size="sm"
-                          onClick={() => handleQuantityChange(item.id, -1)}
-                          isDisabled={item.quantity <= 1}
-                        >
-                          -
-                        </Button>
-                        <Text fontWeight="bold">{item.quantity}</Text>
-                        <Button
-                          size="sm"
-                          onClick={() => handleQuantityChange(item.id, 1)}
-                        >
-                          +
-                        </Button>
-                      </HStack>
-                      <Button
-                        colorScheme="red"
-                        variant="ghost"
-                        onClick={() => handleRemoveItem(item.id)}
-                      >
-                        <Icon as={FaTrash} />
-                      </Button>
-                    </HStack>
-                  </React.Fragment>
-                ))}
-              </VStack>
-            </Box>
-
-            <Box>
-              <VStack
-                spacing={4}
-                align="stretch"
-                bg="gray.800"
-                p={6}
-                borderRadius="lg"
-                boxShadow="md"
-                position="sticky"
-                top="20px"
-              >
-                <Heading size="md" color="whiteAlpha.900">Order Summary</Heading>
-                <Divider />
-                <HStack justify="space-between">
-                  <Text color="whiteAlpha.900">Subtotal</Text>
-                  <Text fontWeight="bold" color="whiteAlpha.900">${calculateSubtotal().toFixed(2)}</Text>
-                </HStack>
-                <HStack justify="space-between">
-                  <Text color="whiteAlpha.900">Tax</Text>
-                  <Text fontWeight="bold" color="whiteAlpha.900">${(calculateSubtotal() * 0.1).toFixed(2)}</Text>
-                </HStack>
-                <Divider />
-                <HStack justify="space-between">
-                  <Text fontWeight="bold" color="whiteAlpha.900">Total</Text>
-                  <Text fontWeight="bold" fontSize="xl" color="blue.400">
-                    ${(calculateSubtotal() * 1.1).toFixed(2)}
-                  </Text>
-                </HStack>
-                <Button
-                  colorScheme="blue"
-                  size="lg"
-                  leftIcon={<Icon as={FaShoppingCart} />}
-                  onClick={handleCheckout}
+        <div className="cart-content">
+          <div className="cart-items">
+            {cartItems.map((item) => (
+              <div key={item.id} className="cart-item">
+                <img src={item.image} alt={item.title} className="item-image" />
+                <div className="item-details">
+                  <h3>{item.title}</h3>
+                  <div className="item-price">
+                    <span className="current-price">${item.price.toFixed(2)}</span>
+                    {item.discount > 0 && (
+                      <>
+                        <span className="original-price">
+                          ${item.originalPrice.toFixed(2)}
+                        </span>
+                        <span className="discount-badge">-{item.discount}%</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <button
+                  className="remove-button"
+                  onClick={() => removeFromCart(item.id)}
                 >
-                  Proceed to Checkout
-                </Button>
-              </VStack>
-            </Box>
-          </SimpleGrid>
-        ) : (
-          <VStack py={12} spacing={4}>
-            <Text fontSize="xl">Your cart is empty</Text>
-            <Button colorScheme="blue" leftIcon={<Icon as={FaShoppingCart} />}>
-              Continue Shopping
-            </Button>
-          </VStack>
-        )}
-      </VStack>
-    </Container>
+                  <FaTrash />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="cart-summary">
+            <div className="summary-section">
+              <h2>Payment Method</h2>
+              <div className="payment-methods">
+                <label className={`payment-method ${paymentMethod === 'credit-card' ? 'active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="credit-card"
+                    checked={paymentMethod === 'credit-card'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <FaCreditCard />
+                  <span>Credit Card</span>
+                </label>
+                <label className={`payment-method ${paymentMethod === 'paypal' ? 'active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="paypal"
+                    checked={paymentMethod === 'paypal'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <FaPaypal />
+                  <span>PayPal</span>
+                </label>
+                <label className={`payment-method ${paymentMethod === 'gift-card' ? 'active' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="gift-card"
+                    checked={paymentMethod === 'gift-card'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <FaGift />
+                  <span>Gift Card</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="summary-section">
+              <h2>Promo Code</h2>
+              <div className="promo-input">
+                <input
+                  type="text"
+                  placeholder="Enter promo code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
+                <button className="apply-button">Apply</button>
+              </div>
+            </div>
+
+            <div className="summary-section">
+              <h2>Order Summary</h2>
+              <div className="summary-details">
+                <div className="summary-row">
+                  <span>Subtotal</span>
+                  <span>${calculateSubtotal().toFixed(2)}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Tax (10%)</span>
+                  <span>${calculateTax().toFixed(2)}</span>
+                </div>
+                <div className="summary-row total">
+                  <span>Total</span>
+                  <span>${calculateTotal().toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            <button className="checkout-button">
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 

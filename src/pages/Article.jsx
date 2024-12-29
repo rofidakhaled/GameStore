@@ -1,253 +1,135 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  VStack,
-  Heading,
-  Text,
-  Image,
-  HStack,
-  Icon,
-  Badge,
-  Divider,
-  Button,
-  Avatar,
-  Textarea,
-  useToast,
-} from '@chakra-ui/react';
-import { FaCalendar, FaTag, FaHeart, FaComment, FaShare } from 'react-icons/fa';
+import { FaCalendar, FaUser, FaTag, FaHeart, FaComment } from 'react-icons/fa';
+import '../styles/Article.css';
 
 const Article = () => {
   const { id } = useParams();
-  const toast = useToast();
-
-  // Mock article data
-  const article = {
-    id: 1,
-    title: 'Cyberpunk 2077: Phantom Liberty Expansion Revealed',
-    image: 'https://via.placeholder.com/1200x600?text=Cyberpunk+2077+Expansion',
+  const [article, setArticle] = useState({
+    title: 'The Evolution of Gaming: From Pixels to Photorealism',
+    author: 'Jane Smith',
     date: '2024-01-15',
-    category: 'DLC',
-    author: {
-      name: 'Sarah Johnson',
-      avatar: 'https://via.placeholder.com/40x40?text=SJ',
-      role: 'Gaming Editor'
-    },
+    category: 'Gaming Technology',
     content: `
-      CD Projekt Red has officially announced the highly anticipated expansion for Cyberpunk 2077, titled "Phantom Liberty." This massive content update promises to bring a new district to Night City, complete with its own storylines, characters, and gameplay mechanics.
-
-      The expansion introduces players to a previously unexplored section of Night City, where corporate intrigue and street-level conflicts intertwine in a narrative that promises to be as compelling as the base game. New characters will be introduced, each with their own motivations and storylines that players can explore.
-
-      Key Features:
-      - New district with unique architecture and atmosphere
-      - Additional storylines and side quests
-      - New weapons and cybernetic enhancements
-      - Enhanced gameplay mechanics
-      - New characters voiced by top talent
-
-      The development team has focused on creating a seamless integration with the base game while pushing the boundaries of what's possible in Night City. Players can expect the same level of detail and polish that they've come to expect from CD Projekt Red.
-
-      The expansion will be available in Q2 2024 and will require the base game to play. Players who pre-order will receive exclusive in-game items and cosmetics.
+      <p>The gaming industry has come a long way since the days of simple pixel graphics. Today's games feature stunning photorealistic visuals that blur the line between reality and virtual worlds.</p>
+      
+      <h2>The Early Days</h2>
+      <p>In the 1970s and 1980s, video games were limited to basic shapes and colors. Games like Pong and Space Invaders relied on simple pixel art to create their worlds.</p>
+      
+      <h2>The 3D Revolution</h2>
+      <p>The 1990s saw the rise of 3D graphics, with games like Doom and Quake pushing the boundaries of what was possible. This era marked a significant turning point in gaming history.</p>
+      
+      <h2>Modern Gaming</h2>
+      <p>Today's games utilize advanced technologies like ray tracing and photogrammetry to create incredibly realistic environments. Games like Red Dead Redemption 2 and Cyberpunk 2077 showcase the pinnacle of modern graphics technology.</p>
+      
+      <h2>The Future</h2>
+      <p>As technology continues to advance, we can expect even more impressive visuals in the future. Real-time ray tracing, AI-enhanced graphics, and virtual reality are just the beginning.</p>
     `,
-    tags: ['RPG', 'Action', 'Open World'],
-    likes: 1247,
-    comments: [
-      {
-        id: 1,
-        author: 'Mike Chen',
-        avatar: 'https://via.placeholder.com/40x40?text=MC',
-        content: 'Can\'t wait to explore the new district! The base game was amazing.',
-        timestamp: '2 hours ago',
-        likes: 45
-      },
+    likes: 245,
+    comments: 58,
+    relatedArticles: [
       {
         id: 2,
-        author: 'Emma Watson',
-        avatar: 'https://via.placeholder.com/40x40?text=EW',
-        content: 'The new features sound promising. Hope they add more character customization options.',
-        timestamp: '1 hour ago',
-        likes: 23
+        title: 'The Rise of Indie Game Development',
+        image: 'https://via.placeholder.com/200x150',
+        date: '2024-01-10'
+      },
+      {
+        id: 3,
+        title: "Virtual Reality: Gaming's Next Frontier",
+        image: 'https://via.placeholder.com/200x150',
+        date: '2024-01-08'
+      },
+      {
+        id: 4,
+        title: 'The Impact of AI on Game Design',
+        image: 'https://via.placeholder.com/200x150',
+        date: '2024-01-05'
       }
     ]
-  };
+  });
+
+  const [liked, setLiked] = useState(false);
+  const [showToast, setShowToast] = useState({ show: false, message: '' });
 
   const handleLike = () => {
-    toast({
-      title: 'Article Liked',
-      description: 'This article has been added to your favorites',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+    setLiked(!liked);
+    setArticle(prev => ({
+      ...prev,
+      likes: prev.likes + (liked ? -1 : 1)
+    }));
+    showToastMessage(liked ? 'Removed like' : 'Added like');
   };
 
-  const handleShare = () => {
-    toast({
-      title: 'Link Copied',
-      description: 'Article link has been copied to clipboard',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+  const showToastMessage = (message) => {
+    setShowToast({ show: true, message });
+    setTimeout(() => setShowToast({ show: false, message: '' }), 3000);
   };
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        {/* Header */}
-        <Box>
-          <Image
-            src={article.image}
-            alt={article.title}
-            borderRadius="lg"
-            w="100%"
-            h="400px"
-            objectFit="cover"
-          />
-          <VStack align="start" spacing={4} mt={6}>
-            <Badge colorScheme="blue" fontSize="sm">
-              {article.category}
-            </Badge>
-            <Heading color="whiteAlpha.900">{article.title}</Heading>
-            <HStack spacing={6} color="whiteAlpha.700">
-              <HStack>
-                <Icon as={FaCalendar} />
-                <Text>{article.date}</Text>
-              </HStack>
-              <HStack>
-                <Avatar
-                  size="sm"
-                  src={article.author.avatar}
-                  name={article.author.name}
-                />
-                <VStack spacing={0} align="start">
-                  <Text color="whiteAlpha.900">{article.author.name}</Text>
-                  <Text fontSize="sm">{article.author.role}</Text>
-                </VStack>
-              </HStack>
-            </HStack>
-          </VStack>
-        </Box>
+    <div className="article-container">
+      <article className="article-content">
+        <h1 className="article-title">{article.title}</h1>
+        
+        <div className="article-meta">
+          <div className="meta-item">
+            <FaUser className="meta-icon" />
+            <span>{article.author}</span>
+          </div>
+          <div className="meta-item">
+            <FaCalendar className="meta-icon" />
+            <span>{new Date(article.date).toLocaleDateString()}</span>
+          </div>
+          <div className="meta-item">
+            <FaTag className="meta-icon" />
+            <span>{article.category}</span>
+          </div>
+        </div>
 
-        <Divider borderColor="gray.600" />
+        <div 
+          className="article-body"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
 
-        {/* Content */}
-        <Box color="whiteAlpha.900">
-          {article.content.split('\n').map((paragraph, index) => (
-            <Text key={index} mb={4}>
-              {paragraph}
-            </Text>
-          ))}
-        </Box>
-
-        {/* Tags */}
-        <HStack spacing={2}>
-          {article.tags.map((tag, index) => (
-            <Badge key={index} colorScheme="gray">
-              {tag}
-            </Badge>
-          ))}
-        </HStack>
-
-        <Divider borderColor="gray.600" />
-
-        {/* Actions */}
-        <HStack spacing={4}>
-          <Button
-            leftIcon={<Icon as={FaHeart} />}
-            colorScheme="red"
-            variant="ghost"
+        <div className="article-actions">
+          <button 
+            className={`like-button ${liked ? 'liked' : ''}`}
             onClick={handleLike}
           >
-            {article.likes} Likes
-          </Button>
-          <Button
-            leftIcon={<Icon as={FaComment} />}
-            colorScheme="blue"
-            variant="ghost"
-          >
-            {article.comments.length} Comments
-          </Button>
-          <Button
-            leftIcon={<Icon as={FaShare} />}
-            colorScheme="green"
-            variant="ghost"
-            onClick={handleShare}
-          >
-            Share
-          </Button>
-        </HStack>
-
-        {/* Comments */}
-        <VStack spacing={4} align="stretch">
-          <Heading size="md" color="whiteAlpha.900">
-            Comments
-          </Heading>
+            <FaHeart />
+            <span>{article.likes} Likes</span>
+          </button>
           
-          <Box bg="gray.800" p={4} borderRadius="lg">
-            <VStack spacing={4} align="stretch">
-              <Textarea
-                placeholder="Add a comment..."
-                bg="gray.700"
-                color="whiteAlpha.900"
-                borderColor="gray.600"
-                _hover={{ borderColor: 'gray.500' }}
-                _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-              />
-              <Button colorScheme="blue" alignSelf="flex-end">
-                Post Comment
-              </Button>
-            </VStack>
-          </Box>
+          <div className="comments-count">
+            <FaComment />
+            <span>{article.comments} Comments</span>
+          </div>
+        </div>
+      </article>
 
-          {article.comments.map((comment) => (
-            <Box
-              key={comment.id}
-              bg="gray.800"
-              p={4}
-              borderRadius="lg"
-            >
-              <HStack spacing={4} align="start">
-                <Avatar
-                  size="sm"
-                  src={comment.avatar}
-                  name={comment.author}
-                />
-                <VStack align="start" spacing={1} flex={1}>
-                  <HStack justify="space-between" w="100%">
-                    <Text color="whiteAlpha.900" fontWeight="bold">
-                      {comment.author}
-                    </Text>
-                    <Text color="whiteAlpha.600" fontSize="sm">
-                      {comment.timestamp}
-                    </Text>
-                  </HStack>
-                  <Text color="whiteAlpha.800">{comment.content}</Text>
-                  <HStack>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      colorScheme="blue"
-                      leftIcon={<Icon as={FaHeart} />}
-                    >
-                      {comment.likes}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      colorScheme="blue"
-                    >
-                      Reply
-                    </Button>
-                  </HStack>
-                </VStack>
-              </HStack>
-            </Box>
+      <aside className="related-articles">
+        <h2>Related Articles</h2>
+        <div className="related-list">
+          {article.relatedArticles.map(related => (
+            <div key={related.id} className="related-item">
+              <img src={related.image} alt={related.title} />
+              <div className="related-info">
+                <h3>{related.title}</h3>
+                <span className="related-date">
+                  {new Date(related.date).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
           ))}
-        </VStack>
-      </VStack>
-    </Container>
+        </div>
+      </aside>
+
+      {showToast.show && (
+        <div className="toast">
+          {showToast.message}
+        </div>
+      )}
+    </div>
   );
 };
 

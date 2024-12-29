@@ -1,177 +1,124 @@
-import React from 'react';
-import {
-  Box,
-  Container,
-  VStack,
-  HStack,
-  Text,
-  Heading,
-  Image,
-  Button,
-  Stat,
-  StatLabel,
-  StatNumber,
-  SimpleGrid,
-  Icon,
-  Divider,
-  useColorModeValue,
-  Avatar,
-  AvatarBadge,
-  Badge,
-} from '@chakra-ui/react';
-import { FaGamepad, FaUsers, FaTrophy, FaClock, FaEdit, FaCamera } from 'react-icons/fa';
-import { avatarImages, bannerImages } from '../assets/images';
+import React, { useState } from 'react';
+import { FaEdit, FaGamepad, FaHeart, FaStar, FaUserFriends } from 'react-icons/fa';
+import '../styles/Profile.css';
 
 const Profile = () => {
-  const stats = [
-    { label: 'Games Owned', value: '42', icon: FaGamepad },
-    { label: 'Friends', value: '128', icon: FaUsers },
-    { label: 'Achievements', value: '156', icon: FaTrophy },
-    { label: 'Hours Played', value: '320', icon: FaClock },
-  ];
-
-  const recentAchievements = [
-    {
-      game: 'Elden Ring',
-      name: 'Master of Sorcery',
-      description: 'Learn all sorceries',
-      date: '2 days ago',
-      image: bannerImages.featured,
-    },
-    {
-      game: 'Cyberpunk 2077',
-      name: 'Night City Legend',
-      description: 'Complete all main missions',
-      date: '1 week ago',
-      image: bannerImages.new,
-    },
-    {
-      game: 'Red Dead Redemption 2',
-      name: 'True Western',
-      description: 'Achieve 100% completion',
-      date: '2 weeks ago',
-      image: bannerImages.sale,
-    },
-  ];
+  const [user, setUser] = useState({
+    username: 'JohnDoe',
+    level: 42,
+    xp: 8750,
+    totalGames: 156,
+    wishlistedGames: 24,
+    friends: 89,
+    recentGames: [
+      { id: 1, name: 'Super Mario Odyssey', lastPlayed: '2 hours ago', playtime: '120h' },
+      { id: 2, name: 'The Legend of Zelda', lastPlayed: '5 hours ago', playtime: '85h' },
+      { id: 3, name: 'Animal Crossing', lastPlayed: 'Yesterday', playtime: '200h' }
+    ],
+    achievements: [
+      { id: 1, name: 'Game Master', description: 'Complete 100 games', progress: 75 },
+      { id: 2, name: 'Social Butterfly', description: 'Make 50 friends', progress: 90 },
+      { id: 3, name: 'Collector', description: 'Own 200 games', progress: 60 }
+    ]
+  });
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        {/* Profile Header */}
-        <Box
-          position="relative"
-          height="200px"
-          borderRadius="xl"
-          overflow="hidden"
-        >
-          <Image
-            src={bannerImages.featured}
-            alt="Profile Banner"
-            objectFit="cover"
-            w="100%"
-            h="100%"
-          />
-          <Box
-            position="absolute"
-            bottom={-16}
-            left={8}
-            zIndex={2}
-          >
-            <Avatar
-              size="2xl"
-              src={avatarImages.default}
-              border="4px solid"
-              borderColor="gray.800"
-              bg="gray.800"
-            >
-              <AvatarBadge
-                boxSize="1.25em"
-                bg="green.500"
-                borderColor="gray.800"
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="profile-avatar">
+          <img src="https://via.placeholder.com/150" alt="Profile" />
+          <button className="edit-avatar-btn">
+            <FaEdit />
+          </button>
+        </div>
+        <div className="profile-info">
+          <h1 className="username">{user.username}</h1>
+          <div className="level-info">
+            <span className="level">Level {user.level}</span>
+            <div className="xp-bar">
+              <div 
+                className="xp-progress" 
+                style={{ width: `${(user.xp % 1000) / 10}%` }}
               />
-            </Avatar>
-          </Box>
-          <Button
-            position="absolute"
-            bottom={4}
-            right={4}
-            leftIcon={<FaCamera />}
-            colorScheme="blue"
-            size="sm"
-          >
-            Change Banner
-          </Button>
-        </Box>
+            </div>
+            <span className="xp-text">{user.xp} XP</span>
+          </div>
+        </div>
+      </div>
 
-        {/* Profile Info */}
-        <Box pt={20} pb={4}>
-          <HStack justify="space-between">
-            <VStack align="start" spacing={1}>
-              <Heading size="xl" color="whiteAlpha.900">John Doe</Heading>
-              <Text color="gray.400">@johndoe</Text>
-            </VStack>
-            <Button leftIcon={<FaEdit />} colorScheme="blue">
-              Edit Profile
-            </Button>
-          </HStack>
-        </Box>
+      <div className="profile-stats">
+        <div className="stat-card">
+          <FaGamepad className="stat-icon" />
+          <div className="stat-info">
+            <span className="stat-value">{user.totalGames}</span>
+            <span className="stat-label">Games</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <FaHeart className="stat-icon" />
+          <div className="stat-info">
+            <span className="stat-value">{user.wishlistedGames}</span>
+            <span className="stat-label">Wishlisted</span>
+          </div>
+        </div>
+        <div className="stat-card">
+          <FaUserFriends className="stat-icon" />
+          <div className="stat-info">
+            <span className="stat-value">{user.friends}</span>
+            <span className="stat-label">Friends</span>
+          </div>
+        </div>
+      </div>
 
-        {/* Stats */}
-        <SimpleGrid columns={{ base: 2, md: 4 }} spacing={6}>
-          {stats.map((stat, index) => (
-            <Box
-              key={index}
-              bg="gray.800"
-              p={6}
-              borderRadius="lg"
-              boxShadow="md"
-              transition="transform 0.2s"
-              _hover={{ transform: 'translateY(-4px)' }}
-            >
-              <VStack>
-                <Icon as={stat.icon} boxSize={6} color="blue.400" />
-                <Stat textAlign="center">
-                  <StatLabel color="gray.400">{stat.label}</StatLabel>
-                  <StatNumber color="whiteAlpha.900" fontSize="2xl">{stat.value}</StatNumber>
-                </Stat>
-              </VStack>
-            </Box>
-          ))}
-        </SimpleGrid>
-
-        {/* Recent Achievements */}
-        <Box>
-          <Heading size="lg" mb={4} color="whiteAlpha.900">Recent Achievements</Heading>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-            {recentAchievements.map((achievement, index) => (
-              <Box
-                key={index}
-                bg="gray.800"
-                borderRadius="lg"
-                overflow="hidden"
-                boxShadow="md"
-                transition="transform 0.2s"
-                _hover={{ transform: 'translateY(-4px)' }}
-              >
-                <Image
-                  src={achievement.image}
-                  alt={achievement.game}
-                  h="120px"
-                  w="100%"
-                  objectFit="cover"
+      <div className="profile-sections">
+        <section className="recent-games">
+          <h2>Recent Games</h2>
+          <div className="games-list">
+            {user.recentGames.map(game => (
+              <div key={game.id} className="game-item">
+                <img 
+                  src={`https://via.placeholder.com/50?text=${game.name}`} 
+                  alt={game.name} 
+                  className="game-icon"
                 />
-                <Box p={4}>
-                  <Badge colorScheme="blue" mb={2}>{achievement.game}</Badge>
-                  <Heading size="md" color="whiteAlpha.900" mb={2}>{achievement.name}</Heading>
-                  <Text color="gray.400" fontSize="sm" mb={2}>{achievement.description}</Text>
-                  <Text color="blue.400" fontSize="sm">{achievement.date}</Text>
-                </Box>
-              </Box>
+                <div className="game-details">
+                  <h3>{game.name}</h3>
+                  <div className="game-meta">
+                    <span>Last played: {game.lastPlayed}</span>
+                    <span>•</span>
+                    <span>Playtime: {game.playtime}</span>
+                  </div>
+                </div>
+              </div>
             ))}
-          </SimpleGrid>
-        </Box>
-      </VStack>
-    </Container>
+          </div>
+        </section>
+
+        <section className="achievements">
+          <h2>Achievements</h2>
+          <div className="achievements-list">
+            {user.achievements.map(achievement => (
+              <div key={achievement.id} className="achievement-item">
+                <div className="achievement-icon">
+                  <FaStar />
+                </div>
+                <div className="achievement-details">
+                  <h3>{achievement.name}</h3>
+                  <p>{achievement.description}</p>
+                  <div className="achievement-progress">
+                    <div 
+                      className="progress-bar"
+                      style={{ width: `${achievement.progress}%` }}
+                    />
+                    <span className="progress-text">{achievement.progress}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 };
 

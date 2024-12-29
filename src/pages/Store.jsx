@@ -1,35 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  SimpleGrid,
-  Image,
-  Text,
-  Heading,
-  Input,
-  Button,
-  HStack,
-  VStack,
-  Icon,
-  Badge,
-  InputGroup,
-  InputLeftElement,
-  Spinner,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Textarea,
-  ButtonGroup,
-} from '@chakra-ui/react';
 import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaEdit, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import axios from 'axios';
 import { gameCoverImages, bannerImages } from '../assets/images';
+import '../styles/Store.css';
 
 const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
   const [rating, setRating] = useState(selectedGame?.rating || 0);
@@ -41,79 +15,65 @@ const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
     setReview('');
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent bg="gray.800">
-        <ModalHeader color="whiteAlpha.900">Rate {selectedGame?.name}</ModalHeader>
-        <ModalCloseButton color="whiteAlpha.900" />
-        <ModalBody pb={6}>
-          <VStack spacing={4}>
-            <HStack spacing={2}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <Icon
-                  key={value}
-                  as={FaStar}
-                  color={value <= rating ? 'yellow.400' : 'gray.300'}
-                  cursor="pointer"
-                  onClick={() => setRating(value)}
-                  w={6}
-                  h={6}
-                />
-              ))}
-            </HStack>
-            <Textarea
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-              placeholder="Write your review..."
-              bg="gray.700"
-              border="none"
-              _focus={{ bg: 'gray.700', border: '1px solid', borderColor: 'blue.500' }}
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close" onClick={onClose}>&times;</button>
+        <h2 className="modal-title">Rate {selectedGame?.name}</h2>
+        <div className="rating-stars">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <FaStar
+              key={value}
+              className={`star ${value <= rating ? 'active' : ''}`}
+              onClick={() => setRating(value)}
             />
-            <Button colorScheme="blue" onClick={handleSubmit}>
-              Submit Review
-            </Button>
-          </VStack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          ))}
+        </div>
+        <textarea
+          className="review-textarea"
+          value={review}
+          onChange={(e) => setReview(e.target.value)}
+          placeholder="Write your review..."
+        />
+        <button className="submit-button" onClick={handleSubmit}>
+          Submit Review
+        </button>
+      </div>
+    </div>
   );
 };
 
 const Store = () => {
   const navigate = useNavigate();
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedGame, setSelectedGame] = useState(null);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showToast, setShowToast] = useState({ show: false, message: '', type: '' });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const gamesPerPage = 20;
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await axios.get('https://api.sampleapis.com/switch/games');
-        const gamesWithPricing = response.data.map(game => {
-          const category = ['action', 'rpg', 'sports'][Math.floor(Math.random() * 3)];
-          const images = gameCoverImages[category];
-          const randomImage = images[Math.floor(Math.random() * images.length)];
-          
-          return {
-            ...game,
-            price: Math.floor(Math.random() * 40) + 20,
-            discount: Math.random() < 0.3 ? Math.floor(Math.random() * 50) + 10 : 0,
-            inWishlist: false,
-            rating: Math.floor(Math.random() * 5) + 1,
-            reviews: Math.floor(Math.random() * 1000) + 100,
-            image: randomImage
-          };
-        });
+        const gamesWithPricing = response.data.map(game => ({
+          ...game,
+          price: Math.floor(Math.random() * 40) + 20,
+          discount: Math.random() < 0.3 ? Math.floor(Math.random() * 50) + 10 : 0,
+          inWishlist: false,
+          rating: Math.floor(Math.random() * 5) + 1,
+          reviews: Math.floor(Math.random() * 1000) + 100,
+          image: getRandomImage(game)
+        }));
         setGames(gamesWithPricing);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching games:', error);
+        showToastMessage('Error loading games', 'error');
         setLoading(false);
       }
     };
@@ -121,9 +81,21 @@ const Store = () => {
     fetchGames();
   }, []);
 
-  const handleRateGame = (game) => {
+  const getRandomImage = (game) => {
+    const category = ['action', 'rpg', 'sports'][Math.floor(Math.random() * 3)];
+    const images = gameCoverImages[category];
+    return images[Math.floor(Math.random() * images.length)];
+  };
+
+  const showToastMessage = (message, type = 'success') => {
+    setShowToast({ show: true, message, type });
+    setTimeout(() => setShowToast({ show: false, message: '', type: '' }), 3000);
+  };
+
+  const handleRateGame = (game, e) => {
+    e.stopPropagation();
     setSelectedGame(game);
-    onOpen();
+    setIsModalOpen(true);
   };
 
   const handleSubmitRating = (newRating, newReview) => {
@@ -132,36 +104,24 @@ const Store = () => {
         ? { ...game, rating: newRating, userReview: newReview }
         : game
     ));
-    onClose();
-    toast({
-      title: 'Rating Submitted',
-      description: 'Thank you for rating this game!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+    setIsModalOpen(false);
+    showToastMessage('Rating submitted successfully');
   };
 
-  const handleToggleWishlist = (game) => {
+  const handleToggleWishlist = (game, e) => {
+    e.stopPropagation();
     setGames(games.map(g => 
       g.id === game.id 
         ? { ...g, inWishlist: !g.inWishlist }
         : g
     ));
-    
-    toast({
-      title: game.inWishlist ? 'Removed from Wishlist' : 'Added to Wishlist',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
+    showToastMessage(game.inWishlist ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
   const filteredGames = games.filter(game =>
     game.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
   const startIndex = (currentPage - 1) * gamesPerPage;
   const paginatedGames = filteredGames.slice(startIndex, startIndex + gamesPerPage);
@@ -173,233 +133,148 @@ const Store = () => {
 
   if (loading) {
     return (
-      <Container maxW="container.xl" py={8}>
-        <VStack>
-          <Spinner size="xl" />
-          <Text>Loading games...</Text>
-        </VStack>
-      </Container>
+      <div className="loading-container">
+        <div className="spinner" />
+        <p>Loading games...</p>
+      </div>
     );
   }
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        {/* Featured Banner */}
-        <Box
-          position="relative"
-          height="300px"
-          borderRadius="xl"
-          overflow="hidden"
-          mb={8}
-        >
-          <Image
-            src={bannerImages.featured}
-            alt="Featured Games"
-            objectFit="cover"
-            w="100%"
-            h="100%"
-          />
-          <Box
-            position="absolute"
-            bottom={0}
-            left={0}
-            right={0}
-            bg="rgba(0, 0, 0, 0.7)"
-            p={6}
+    <div className="store-container">
+      <div className="featured-banner">
+        <img src={bannerImages.featured} alt="Featured Games" />
+        <div className="banner-overlay">
+          <h1 className="banner-title">Featured Games</h1>
+          <p className="banner-subtitle">Discover the latest and greatest in gaming</p>
+        </div>
+      </div>
+
+      <div className="search-container">
+        <FaSearch className="search-icon" />
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search games..."
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+        />
+      </div>
+
+      <div className="games-grid">
+        {paginatedGames.map((game) => (
+          <div
+            key={game.id}
+            className="game-card"
+            onClick={() => navigate(`/game/${game.id}`)}
           >
-            <Heading color="white" size="xl">
-              Featured Games
-            </Heading>
-            <Text color="gray.300" mt={2}>
-              Discover the latest and greatest in gaming
-            </Text>
-          </Box>
-        </Box>
+            <div className="game-image-container">
+              <img className="game-image" src={game.image} alt={game.name} />
+              {game.discount > 0 && (
+                <span className="discount-badge">-{game.discount}%</span>
+              )}
+            </div>
 
-        {/* Search Bar */}
-        <InputGroup size="lg">
-          <InputLeftElement pointerEvents="none">
-            <Icon as={FaSearch} color="gray.500" />
-          </InputLeftElement>
-          <Input
-            placeholder="Search games..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1); // Reset to first page on search
-            }}
-            bg="gray.800"
-            color="whiteAlpha.900"
-            _placeholder={{ color: 'gray.400' }}
-            borderColor="gray.600"
-            _hover={{ borderColor: 'gray.500' }}
-            _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-          />
-        </InputGroup>
+            <div className="game-details">
+              <h3 className="game-title">{game.name}</h3>
+              
+              <div className="rating-container">
+                <FaStar className="star-icon" />
+                <span>{game.rating.toFixed(1)}</span>
+                <span className="reviews-count">({game.reviews} reviews)</span>
+              </div>
 
-        {/* Games Grid */}
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          {paginatedGames.map((game) => (
-            <Box
-              key={game.id}
-              bg="gray.800"
-              borderRadius="lg"
-              overflow="hidden"
-              boxShadow="lg"
-              transition="transform 0.2s"
-              _hover={{ transform: 'translateY(-4px)' }}
-              cursor="pointer"
-              onClick={() => navigate(`/game/${game.id}`)}
-            >
-              <Box position="relative">
-                <Image
-                  src={game.image}
-                  alt={game.name}
-                  w="100%"
-                  h="200px"
-                  objectFit="cover"
-                />
-                {game.discount > 0 && (
-                  <Badge
-                    position="absolute"
-                    top={2}
-                    right={2}
-                    colorScheme="red"
-                    fontSize="lg"
-                    px={3}
-                    py={1}
-                  >
-                    -{game.discount}%
-                  </Badge>
-                )}
-              </Box>
-
-              <Box p={4}>
-                <Heading size="md" color="whiteAlpha.900" noOfLines={2}>
-                  {game.name}
-                </Heading>
+              <div className="price-container">
+                <div className="price-tag">
+                  {game.discount > 0 ? (
+                    <>
+                      <span className="original-price">${game.price}</span>
+                      <span className="discounted-price">
+                        ${(game.price * (1 - game.discount / 100)).toFixed(2)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="discounted-price">${game.price}</span>
+                  )}
+                </div>
                 
-                <HStack mt={2} spacing={2}>
-                  <HStack>
-                    <Icon as={FaStar} color="yellow.400" />
-                    <Text color="whiteAlpha.900">{game.rating.toFixed(1)}</Text>
-                  </HStack>
-                  <Text color="gray.400">({game.reviews} reviews)</Text>
-                </HStack>
+                <div className="action-buttons">
+                  <FaHeart
+                    className={`action-icon wishlist ${game.inWishlist ? 'active' : ''}`}
+                    onClick={(e) => handleToggleWishlist(game, e)}
+                  />
+                  <FaEdit
+                    className="action-icon"
+                    onClick={(e) => handleRateGame(game, e)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-                <HStack justify="space-between" mt={4}>
-                  <HStack spacing={2}>
-                    {game.discount > 0 ? (
-                      <>
-                        <Text
-                          color="gray.400"
-                          textDecoration="line-through"
-                          fontSize="sm"
-                        >
-                          ${game.price}
-                        </Text>
-                        <Text color="whiteAlpha.900" fontSize="xl" fontWeight="bold">
-                          ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                        </Text>
-                      </>
-                    ) : (
-                      <Text color="whiteAlpha.900" fontSize="xl" fontWeight="bold">
-                        ${game.price}
-                      </Text>
-                    )}
-                  </HStack>
-                  
-                  <HStack>
-                    <Icon
-                      as={FaHeart}
-                      color={game.inWishlist ? 'red.500' : 'gray.600'}
-                      cursor="pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleWishlist(game);
-                      }}
-                      _hover={{ color: 'red.500' }}
-                    />
-                    <Icon
-                      as={FaEdit}
-                      color="gray.600"
-                      cursor="pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRateGame(game);
-                      }}
-                      _hover={{ color: 'blue.500' }}
-                    />
-                  </HStack>
-                </HStack>
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <FaChevronLeft /> Previous
+          </button>
+          
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNum = index + 1;
+            if (
+              pageNum === 1 ||
+              pageNum === totalPages ||
+              (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
+            ) {
+              return (
+                <button
+                  key={pageNum}
+                  className={`pagination-button ${currentPage === pageNum ? 'active' : ''}`}
+                  onClick={() => handlePageChange(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              );
+            } else if (
+              pageNum === currentPage - 3 ||
+              pageNum === currentPage + 3
+            ) {
+              return <span key={pageNum}>...</span>;
+            }
+            return null;
+          })}
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <HStack justify="center" spacing={4} mt={8}>
-            <Button
-              leftIcon={<FaChevronLeft />}
-              onClick={() => handlePageChange(currentPage - 1)}
-              isDisabled={currentPage === 1}
-              colorScheme="blue"
-              variant="outline"
-            >
-              Previous
-            </Button>
-            
-            <ButtonGroup spacing={2}>
-              {[...Array(totalPages)].map((_, index) => {
-                const pageNum = index + 1;
-                // Show first page, last page, current page, and pages around current page
-                if (
-                  pageNum === 1 ||
-                  pageNum === totalPages ||
-                  (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
-                ) {
-                  return (
-                    <Button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      colorScheme={currentPage === pageNum ? 'blue' : 'gray'}
-                      variant={currentPage === pageNum ? 'solid' : 'outline'}
-                    >
-                      {pageNum}
-                    </Button>
-                  );
-                } else if (
-                  pageNum === currentPage - 3 ||
-                  pageNum === currentPage + 3
-                ) {
-                  return <Text key={pageNum}>...</Text>;
-                }
-                return null;
-              })}
-            </ButtonGroup>
-
-            <Button
-              rightIcon={<FaChevronRight />}
-              onClick={() => handlePageChange(currentPage + 1)}
-              isDisabled={currentPage === totalPages}
-              colorScheme="blue"
-              variant="outline"
-            >
-              Next
-            </Button>
-          </HStack>
-        )}
-      </VStack>
+          <button
+            className="pagination-button"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next <FaChevronRight />
+          </button>
+        </div>
+      )}
 
       <RatingModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         selectedGame={selectedGame}
         onSubmit={handleSubmitRating}
       />
-    </Container>
+
+      {showToast.show && (
+        <div className={`toast ${showToast.type}`}>
+          {showToast.message}
+        </div>
+      )}
+    </div>
   );
 };
 

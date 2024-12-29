@@ -1,329 +1,229 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Container,
-  VStack,
-  Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  Switch,
-  Select,
-  Button,
-  useToast,
-  Divider,
-  SimpleGrid,
-  Icon,
-  Text,
-  HStack,
-  useColorMode,
-  Badge,
-} from '@chakra-ui/react';
-import { FaSave, FaDownload, FaBell, FaGlobe, FaPalette, FaGamepad, FaUserShield, FaLanguage } from 'react-icons/fa';
+  FaUser,
+  FaLock,
+  FaBell,
+  FaDownload,
+  FaGamepad,
+  FaPalette,
+  FaGlobe,
+  FaMicrophone,
+  FaHeadphones,
+} from 'react-icons/fa';
+import '../styles/Settings.css';
 
 const Settings = () => {
-  const toast = useToast();
-  
-  const [settings, setSettings] = useState({
-    notifications: {
-      desktop: true,
-      email: false,
-      updates: true,
-      friendRequests: true,
-      gameInvites: true
-    },
-    appearance: {
-      fontSize: 'medium',
-      compactMode: false,
-      animations: true
-    },
-    language: 'en',
-    downloads: {
-      path: 'C:/Games',
-      autoUpdate: true,
-      downloadWhilePlaying: false,
-      bandwidthLimit: 'unlimited'
-    },
-    privacy: {
-      profileVisibility: 'public',
-      onlineStatus: 'online',
-      gameActivity: true,
-      friendRequests: 'everyone'
-    }
-  });
+  const [activeSection, setActiveSection] = useState('profile');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [autoUpdate, setAutoUpdate] = useState(true);
+  const [theme, setTheme] = useState('dark');
+  const [language, setLanguage] = useState('en');
+  const [downloadLocation, setDownloadLocation] = useState('C:/Games');
+  const [micVolume, setMicVolume] = useState(80);
+  const [speakerVolume, setSpeakerVolume] = useState(65);
 
-  const handleChange = (category, field, value) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [field]: value
-      }
-    }));
-  };
+  const sections = [
+    { id: 'profile', label: 'Profile Settings', icon: FaUser },
+    { id: 'security', label: 'Security', icon: FaLock },
+    { id: 'notifications', label: 'Notifications', icon: FaBell },
+    { id: 'downloads', label: 'Downloads', icon: FaDownload },
+    { id: 'gameplay', label: 'Gameplay', icon: FaGamepad },
+    { id: 'appearance', label: 'Appearance', icon: FaPalette },
+    { id: 'language', label: 'Language', icon: FaGlobe },
+    { id: 'audio', label: 'Audio', icon: FaHeadphones },
+  ];
 
-  const handleSave = () => {
-    toast({
-      title: 'Settings saved',
-      description: 'Your preferences have been updated successfully.',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
-  };
-
-  const SettingsCard = ({ icon, title, children }) => (
-    <Box
-      bg="gray.800"
-      p={6}
-      borderRadius="lg"
-      boxShadow="lg"
-      borderWidth="1px"
-      borderColor="gray.700"
-      _hover={{ borderColor: 'gray.600' }}
-      transition="all 0.2s"
-    >
-      <VStack align="stretch" spacing={4}>
-        <HStack>
-          <Icon as={icon} color="blue.400" boxSize={5} />
-          <Heading size="md" color="whiteAlpha.900">{title}</Heading>
-        </HStack>
-        {children}
-      </VStack>
-    </Box>
-  );
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' },
+    { code: 'fr', name: 'Français' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'pt', name: 'Português' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'ja', name: '日本語' },
+    { code: 'ko', name: '한국어' },
+    { code: 'zh', name: '中文' },
+  ];
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <HStack justify="space-between">
-          <VStack align="start" spacing={1}>
-            <Heading size="xl" color="whiteAlpha.900">Settings</Heading>
-            <Text color="whiteAlpha.600">Customize your gaming experience</Text>
-          </VStack>
-          <Button
-            colorScheme="blue"
-            leftIcon={<Icon as={FaSave} />}
-            onClick={handleSave}
-            size="lg"
-          >
-            Save Changes
-          </Button>
-        </HStack>
+    <div className="settings-container">
+      <aside className="settings-sidebar">
+        <nav className="settings-nav">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              className={`nav-button ${activeSection === section.id ? 'active' : ''}`}
+              onClick={() => setActiveSection(section.id)}
+            >
+              <section.icon className="nav-icon" />
+              <span>{section.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
-          {/* Notifications */}
-          <SettingsCard icon={FaBell} title="Notifications">
-            <VStack align="stretch" spacing={4}>
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Desktop Notifications</FormLabel>
-                <Switch
-                  isChecked={settings.notifications.desktop}
-                  onChange={(e) => handleChange('notifications', 'desktop', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
+      <main className="settings-main">
+        <div className="settings-header">
+          <h1>Settings</h1>
+          <p>Manage your account settings and preferences</p>
+        </div>
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Email Notifications</FormLabel>
-                <Switch
-                  isChecked={settings.notifications.email}
-                  onChange={(e) => handleChange('notifications', 'email', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
+        {activeSection === 'profile' && (
+          <section className="settings-section">
+            <h2>Profile Settings</h2>
+            <div className="settings-content">
+              <div className="form-group">
+                <label>Display Name</label>
+                <input type="text" defaultValue="GameMaster123" />
+              </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" defaultValue="user@example.com" />
+              </div>
+              <div className="form-group">
+                <label>Bio</label>
+                <textarea defaultValue="Passionate gamer since 2010" />
+              </div>
+            </div>
+          </section>
+        )}
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Game Updates</FormLabel>
-                <Switch
-                  isChecked={settings.notifications.updates}
-                  onChange={(e) => handleChange('notifications', 'updates', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
+        {activeSection === 'notifications' && (
+          <section className="settings-section">
+            <h2>Notification Preferences</h2>
+            <div className="settings-content">
+              <div className="toggle-group">
+                <label>Enable Notifications</label>
+                <label className="toggle">
+                  <input
+                    type="checkbox"
+                    checked={notificationsEnabled}
+                    onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="toggle-group">
+                <label>Game Updates</label>
+                <label className="toggle">
+                  <input type="checkbox" defaultChecked />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="toggle-group">
+                <label>Friend Requests</label>
+                <label className="toggle">
+                  <input type="checkbox" defaultChecked />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+        )}
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Friend Requests</FormLabel>
-                <Switch
-                  isChecked={settings.notifications.friendRequests}
-                  onChange={(e) => handleChange('notifications', 'friendRequests', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
-            </VStack>
-          </SettingsCard>
+        {activeSection === 'downloads' && (
+          <section className="settings-section">
+            <h2>Download Settings</h2>
+            <div className="settings-content">
+              <div className="form-group">
+                <label>Download Location</label>
+                <div className="input-with-button">
+                  <input type="text" value={downloadLocation} readOnly />
+                  <button className="secondary-button">Browse</button>
+                </div>
+              </div>
+              <div className="toggle-group">
+                <label>Auto-Update Games</label>
+                <label className="toggle">
+                  <input
+                    type="checkbox"
+                    checked={autoUpdate}
+                    onChange={(e) => setAutoUpdate(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+        )}
 
-          {/* Downloads */}
-          <SettingsCard icon={FaDownload} title="Downloads">
-            <VStack align="stretch" spacing={4}>
-              <FormControl>
-                <FormLabel color="whiteAlpha.900">Download Location</FormLabel>
-                <Input
-                  value={settings.downloads.path}
-                  onChange={(e) => handleChange('downloads', 'path', e.target.value)}
-                  bg="gray.700"
-                  color="whiteAlpha.900"
-                  borderColor="gray.600"
-                  _hover={{ borderColor: 'gray.500' }}
-                  _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-                />
-              </FormControl>
+        {activeSection === 'appearance' && (
+          <section className="settings-section">
+            <h2>Appearance Settings</h2>
+            <div className="settings-content">
+              <div className="form-group">
+                <label>Theme</label>
+                <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                  <option value="dark">Dark Theme</option>
+                  <option value="light">Light Theme</option>
+                  <option value="system">System Default</option>
+                </select>
+              </div>
+            </div>
+          </section>
+        )}
 
-              <FormControl>
-                <FormLabel color="whiteAlpha.900">Bandwidth Limit</FormLabel>
-                <Select
-                  value={settings.downloads.bandwidthLimit}
-                  onChange={(e) => handleChange('downloads', 'bandwidthLimit', e.target.value)}
-                  bg="gray.700"
-                  color="whiteAlpha.900"
-                  borderColor="gray.600"
-                  _hover={{ borderColor: 'gray.500' }}
-                  _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-                >
-                  <option value="unlimited">Unlimited</option>
-                  <option value="10">10 Mbps</option>
-                  <option value="20">20 Mbps</option>
-                  <option value="50">50 Mbps</option>
-                </Select>
-              </FormControl>
+        {activeSection === 'language' && (
+          <section className="settings-section">
+            <h2>Language Settings</h2>
+            <div className="settings-content">
+              <div className="form-group">
+                <label>Display Language</label>
+                <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </section>
+        )}
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Auto-Update Games</FormLabel>
-                <Switch
-                  isChecked={settings.downloads.autoUpdate}
-                  onChange={(e) => handleChange('downloads', 'autoUpdate', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
+        {activeSection === 'audio' && (
+          <section className="settings-section">
+            <h2>Audio Settings</h2>
+            <div className="settings-content">
+              <div className="form-group">
+                <label>Microphone Volume</label>
+                <div className="volume-control">
+                  <FaMicrophone className="volume-icon" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={micVolume}
+                    onChange={(e) => setMicVolume(parseInt(e.target.value))}
+                  />
+                  <span className="volume-value">{micVolume}%</span>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Speaker Volume</label>
+                <div className="volume-control">
+                  <FaHeadphones className="volume-icon" />
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={speakerVolume}
+                    onChange={(e) => setSpeakerVolume(parseInt(e.target.value))}
+                  />
+                  <span className="volume-value">{speakerVolume}%</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Download While Playing</FormLabel>
-                <Switch
-                  isChecked={settings.downloads.downloadWhilePlaying}
-                  onChange={(e) => handleChange('downloads', 'downloadWhilePlaying', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
-            </VStack>
-          </SettingsCard>
-
-          {/* Appearance */}
-          <SettingsCard icon={FaPalette} title="Appearance">
-            <VStack align="stretch" spacing={4}>
-              <FormControl>
-                <FormLabel color="whiteAlpha.900">Font Size</FormLabel>
-                <Select
-                  value={settings.appearance.fontSize}
-                  onChange={(e) => handleChange('appearance', 'fontSize', e.target.value)}
-                  bg="gray.700"
-                  color="whiteAlpha.900"
-                  borderColor="gray.600"
-                  _hover={{ borderColor: 'gray.500' }}
-                  _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-                >
-                  <option value="small">Small</option>
-                  <option value="medium">Medium</option>
-                  <option value="large">Large</option>
-                </Select>
-              </FormControl>
-
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Compact Mode</FormLabel>
-                <Switch
-                  isChecked={settings.appearance.compactMode}
-                  onChange={(e) => handleChange('appearance', 'compactMode', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
-
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Enable Animations</FormLabel>
-                <Switch
-                  isChecked={settings.appearance.animations}
-                  onChange={(e) => handleChange('appearance', 'animations', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
-            </VStack>
-          </SettingsCard>
-
-          {/* Privacy */}
-          <SettingsCard icon={FaUserShield} title="Privacy">
-            <VStack align="stretch" spacing={4}>
-              <FormControl>
-                <FormLabel color="whiteAlpha.900">Profile Visibility</FormLabel>
-                <Select
-                  value={settings.privacy.profileVisibility}
-                  onChange={(e) => handleChange('privacy', 'profileVisibility', e.target.value)}
-                  bg="gray.700"
-                  color="whiteAlpha.900"
-                  borderColor="gray.600"
-                  _hover={{ borderColor: 'gray.500' }}
-                  _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-                >
-                  <option value="public">Public</option>
-                  <option value="friends">Friends Only</option>
-                  <option value="private">Private</option>
-                </Select>
-              </FormControl>
-
-              <FormControl>
-                <FormLabel color="whiteAlpha.900">Online Status</FormLabel>
-                <Select
-                  value={settings.privacy.onlineStatus}
-                  onChange={(e) => handleChange('privacy', 'onlineStatus', e.target.value)}
-                  bg="gray.700"
-                  color="whiteAlpha.900"
-                  borderColor="gray.600"
-                  _hover={{ borderColor: 'gray.500' }}
-                  _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-                >
-                  <option value="online">Online</option>
-                  <option value="away">Away</option>
-                  <option value="invisible">Invisible</option>
-                </Select>
-              </FormControl>
-
-              <FormControl display="flex" alignItems="center" justifyContent="space-between">
-                <FormLabel mb="0" color="whiteAlpha.900">Show Game Activity</FormLabel>
-                <Switch
-                  isChecked={settings.privacy.gameActivity}
-                  onChange={(e) => handleChange('privacy', 'gameActivity', e.target.checked)}
-                  colorScheme="blue"
-                />
-              </FormControl>
-            </VStack>
-          </SettingsCard>
-
-          {/* Language */}
-          <SettingsCard icon={FaLanguage} title="Language">
-            <FormControl>
-              <FormLabel color="whiteAlpha.900">Display Language</FormLabel>
-              <Select
-                value={settings.language}
-                onChange={(e) => handleChange('language', e.target.value)}
-                bg="gray.700"
-                color="whiteAlpha.900"
-                borderColor="gray.600"
-                _hover={{ borderColor: 'gray.500' }}
-                _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-              >
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="it">Italiano</option>
-                <option value="pt">Português</option>
-                <option value="ru">Русский</option>
-                <option value="ja">日本語</option>
-                <option value="ko">한국어</option>
-                <option value="zh">中文</option>
-              </Select>
-            </FormControl>
-          </SettingsCard>
-        </SimpleGrid>
-      </VStack>
-    </Container>
+        <div className="settings-actions">
+          <button className="primary-button">Save Changes</button>
+          <button className="secondary-button">Reset to Default</button>
+        </div>
+      </main>
+    </div>
   );
 };
 

@@ -1,0 +1,367 @@
+.friends-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-8);
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-8);
+}
+
+@media (max-width: 1024px) {
+  .friends-container {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-4);
+  }
+}
+
+/* Sidebar */
+.friends-sidebar {
+  position: sticky;
+  top: var(--spacing-8);
+  height: fit-content;
+}
+
+.search-section {
+  margin-bottom: var(--spacing-6);
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4) var(--spacing-3) var(--spacing-10);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  transition: var(--transition-all);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.friends-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-4);
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.nav-button:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.nav-button.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.nav-button .count {
+  margin-left: auto;
+  background-color: var(--color-bg-tertiary);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+}
+
+.nav-button.active .count {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.online-icon {
+  color: var(--color-success);
+  font-size: 0.75rem;
+}
+
+.offline-icon {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+/* Friend Requests */
+.friend-requests {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+}
+
+.friend-requests h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+  color: var(--color-text);
+}
+
+.request-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-tertiary);
+  margin-bottom: var(--spacing-3);
+}
+
+.request-card:last-child {
+  margin-bottom: 0;
+}
+
+.request-card .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.request-info h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-1);
+}
+
+.request-info p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.request-actions {
+  margin-left: auto;
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.accept-button,
+.decline-button {
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.accept-button {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.accept-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.decline-button {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+}
+
+.decline-button:hover {
+  background-color: var(--color-danger);
+  color: white;
+}
+
+/* Main Content */
+.friends-main {
+  min-width: 0;
+}
+
+.friends-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.friends-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.add-friend-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.add-friend-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Friends List */
+.friends-list {
+  display: grid;
+  gap: var(--spacing-4);
+}
+
+.friend-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  transition: transform 0.2s;
+}
+
+.friend-card:hover {
+  transform: translateY(-2px);
+}
+
+.friend-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.friend-avatar {
+  position: relative;
+}
+
+.friend-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg-secondary);
+}
+
+.status-indicator.online {
+  background-color: var(--color-success);
+}
+
+.status-indicator.offline {
+  background-color: var(--color-text-secondary);
+}
+
+.friend-info h3 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-1);
+}
+
+.friend-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.current-game,
+.last-seen {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.meta-icon {
+  color: var(--color-primary);
+}
+
+.friend-secondary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-6);
+}
+
+.friend-stats {
+  display: flex;
+  gap: var(--spacing-6);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.more-options {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-2);
+  border-radius: var(--radius-md);
+  transition: var(--transition-all);
+}
+
+.more-options:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .friend-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-4);
+  }
+
+  .friend-secondary {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .friend-stats {
+    gap: var(--spacing-4);
+  }
+}

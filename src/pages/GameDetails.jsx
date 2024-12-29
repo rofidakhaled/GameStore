@@ -1,35 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  Image,
-  Text,
-  Heading,
-  Button,
-  HStack,
-  VStack,
-  Icon,
-  Badge,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  SimpleGrid,
-  Progress,
-  Spinner,
-  useToast,
-  Avatar,
-  Input,
-  Textarea,
-  Divider,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from '@chakra-ui/react';
 import { 
   FaShoppingCart, 
   FaBell, 
@@ -42,10 +12,8 @@ import {
   FaThumbsUp,
   FaReply,
   FaEllipsisV,
-  FaTrash,
-  FaEdit,
 } from 'react-icons/fa';
-import axios from 'axios';
+import '../styles/GameDetails.css';
 
 const CommentSection = ({ gameId }) => {
   const [comments, setComments] = useState([
@@ -89,7 +57,6 @@ const CommentSection = ({ gameId }) => {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyContent, setReplyContent] = useState('');
-  const toast = useToast();
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
@@ -109,13 +76,6 @@ const CommentSection = ({ gameId }) => {
 
     setComments([comment, ...comments]);
     setNewComment('');
-    
-    toast({
-      title: 'Comment Added',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
   };
 
   const handleAddReply = (commentId) => {
@@ -141,13 +101,6 @@ const CommentSection = ({ gameId }) => {
 
     setReplyingTo(null);
     setReplyContent('');
-    
-    toast({
-      title: 'Reply Added',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    });
   };
 
   const handleLike = (commentId, isReply = false, parentId = null) => {
@@ -185,395 +138,296 @@ const CommentSection = ({ gameId }) => {
   };
 
   const Comment = ({ comment, isReply = false, parentId = null }) => (
-    <VStack align="stretch" spacing={4} w="100%">
-      <HStack spacing={4}>
-        <Avatar src={comment.user.avatar} name={comment.user.name} size="sm" />
-        <VStack align="start" flex={1} spacing={1}>
-          <HStack>
-            <Text fontWeight="bold">{comment.user.name}</Text>
-            {comment.user.isVerified && (
-              <Badge colorScheme="blue">Verified</Badge>
-            )}
-            <Text fontSize="sm" color="gray.500">
-              {formatTimestamp(comment.timestamp)}
-            </Text>
-          </HStack>
-          <Text color="whiteAlpha.900">{comment.content}</Text>
-          <HStack spacing={4}>
-            <Button
-              size="sm"
-              leftIcon={<FaThumbsUp />}
-              variant="ghost"
-              onClick={() => handleLike(comment.id, isReply, parentId)}
-            >
-              {comment.likes} Likes
-            </Button>
-            {!isReply && (
-              <Button
-                size="sm"
-                leftIcon={<FaReply />}
-                variant="ghost"
-                onClick={() => setReplyingTo(comment.id)}
-              >
-                Reply
-              </Button>
-            )}
-          </HStack>
-        </VStack>
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            icon={<FaEllipsisV />}
-            variant="ghost"
-            size="sm"
+    <div className="comment">
+      <div className="comment-header">
+        <div className="comment-user">
+          <img 
+            src={comment.user.avatar} 
+            alt={comment.user.name} 
+            className="user-avatar"
           />
-          <MenuList bg="gray.800">
-            <MenuItem icon={<FaEdit />} command="⌘E" bg="gray.800" _hover={{ bg: 'gray.700' }}>
-              Edit
-            </MenuItem>
-            <MenuItem icon={<FaTrash />} command="⌘D" bg="gray.800" _hover={{ bg: 'gray.700' }}>
-              Delete
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </HStack>
-
+          <div>
+            <span className="user-name">{comment.user.name}</span>
+            {comment.user.isVerified && (
+              <span className="verified-badge">Verified</span>
+            )}
+          </div>
+          <span className="comment-timestamp">
+            {formatTimestamp(comment.timestamp)}
+          </span>
+        </div>
+      </div>
+      <div className="comment-content">{comment.content}</div>
+      <div className="comment-actions">
+        <button 
+          className="action-button"
+          onClick={() => handleLike(comment.id, isReply, parentId)}
+        >
+          <FaThumbsUp /> {comment.likes}
+        </button>
+        {!isReply && (
+          <button 
+            className="action-button"
+            onClick={() => setReplyingTo(comment.id)}
+          >
+            <FaReply /> Reply
+          </button>
+        )}
+      </div>
       {replyingTo === comment.id && (
-        <Box pl={12}>
-          <VStack align="stretch" spacing={2}>
-            <Textarea
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              placeholder="Write a reply..."
-              bg="gray.800"
-              borderColor="gray.600"
-              _hover={{ borderColor: 'gray.500' }}
-              _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-            />
-            <HStack justify="flex-end" spacing={2}>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setReplyingTo(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                colorScheme="blue"
-                onClick={() => handleAddReply(comment.id)}
-              >
-                Reply
-              </Button>
-            </HStack>
-          </VStack>
-        </Box>
+        <div className="reply-input">
+          <textarea
+            className="comment-textarea"
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            placeholder="Write a reply..."
+          />
+          <div className="action-buttons">
+            <button 
+              className="btn btn-primary"
+              onClick={() => handleAddReply(comment.id)}
+            >
+              Reply
+            </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setReplyingTo(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
-
-      {!isReply && comment.replies?.length > 0 && (
-        <VStack align="stretch" spacing={4} pl={12}>
+      {!isReply && comment.replies.length > 0 && (
+        <div className="replies">
           {comment.replies.map(reply => (
-            <Comment
-              key={reply.id}
-              comment={reply}
-              isReply={true}
+            <Comment 
+              key={reply.id} 
+              comment={reply} 
+              isReply={true} 
               parentId={comment.id}
             />
           ))}
-        </VStack>
+        </div>
       )}
-    </VStack>
+    </div>
   );
 
   return (
-    <VStack align="stretch" spacing={6}>
-      <VStack align="stretch" spacing={4}>
-        <Heading size="md" color="whiteAlpha.900">Comments</Heading>
-        <VStack align="stretch" spacing={2}>
-          <Textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Write a comment..."
-            bg="gray.800"
-            borderColor="gray.600"
-            _hover={{ borderColor: 'gray.500' }}
-            _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-          />
-          <Button
-            alignSelf="flex-end"
-            colorScheme="blue"
-            onClick={handleAddComment}
-          >
-            Post Comment
-          </Button>
-        </VStack>
-      </VStack>
-
-      <Divider borderColor="gray.600" />
-
-      <VStack align="stretch" spacing={6}>
+    <div className="comments-section">
+      <div className="comment-input">
+        <textarea
+          className="comment-textarea"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Write a comment..."
+        />
+        <button 
+          className="btn btn-primary"
+          onClick={handleAddComment}
+        >
+          Add Comment
+        </button>
+      </div>
+      <div className="comments-list">
         {comments.map(comment => (
           <Comment key={comment.id} comment={comment} />
         ))}
-      </VStack>
-    </VStack>
+      </div>
+    </div>
   );
 };
 
 const GameDetails = () => {
   const { id } = useParams();
-  const toast = useToast();
-  const [game, setGame] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('description');
+  const [game, setGame] = useState({
+    id: 1,
+    title: 'Cyberpunk 2077',
+    image: 'https://via.placeholder.com/600x400',
+    description: 'Cyberpunk 2077 is an open-world, action-adventure story set in Night City, a megalopolis obsessed with power, glamour and body modification.',
+    price: 59.99,
+    discount: 20,
+    rating: 4.5,
+    releaseDate: '2020-12-10',
+    developer: 'CD Projekt Red',
+    publisher: 'CD Projekt',
+    genre: 'Action RPG',
+    platforms: ['PC', 'PS5', 'Xbox Series X'],
+    features: ['Single-player', 'Ray Tracing', 'HDR'],
+    requirements: {
+      minimum: {
+        os: 'Windows 10',
+        processor: 'Intel Core i5-3570K',
+        memory: '8 GB RAM',
+        graphics: 'NVIDIA GeForce GTX 970',
+        storage: '70 GB'
+      },
+      recommended: {
+        os: 'Windows 10',
+        processor: 'Intel Core i7-4790',
+        memory: '12 GB RAM',
+        graphics: 'NVIDIA GeForce GTX 1060',
+        storage: '70 GB'
+      }
+    },
+    playerCount: '1 player',
+    inWishlist: false,
+    inCart: false
+  });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchGameDetails = async () => {
-      try {
-        const response = await axios.get(`https://api.sampleapis.com/switch/games`);
-        const foundGame = response.data.find(g => g.id === parseInt(id));
-        if (foundGame) {
-          // Add additional game details
-          setGame({
-            ...foundGame,
-            price: Math.floor(Math.random() * 40) + 20,
-            discount: Math.random() < 0.3 ? Math.floor(Math.random() * 50) + 10 : 0,
-            description: foundGame.description || 'An exciting game with amazing gameplay and stunning graphics.',
-            releaseDate: '2023-12-25',
-            developer: 'Game Studio',
-            publisher: 'Game Publisher',
-            genres: ['Action', 'Adventure', 'RPG'],
-            rating: 4.5,
-            reviews: 1250,
-            features: [
-              'Single-player',
-              'Multi-player',
-              'Online Co-op',
-              'Controller Support'
-            ],
-            systemRequirements: {
-              minimum: {
-                os: 'Windows 10',
-                processor: 'Intel Core i5',
-                memory: '8 GB RAM',
-                graphics: 'NVIDIA GTX 1060',
-                storage: '50 GB'
-              },
-              recommended: {
-                os: 'Windows 10',
-                processor: 'Intel Core i7',
-                memory: '16 GB RAM',
-                graphics: 'NVIDIA RTX 2060',
-                storage: '50 GB'
-              }
-            }
-          });
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching game details:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchGameDetails();
+    // Simulating API call
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, [id]);
 
-  const handleAddToCart = () => {
-    toast({
-      title: 'Added to Cart',
-      description: `${game.name} has been added to your cart`,
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+  const toggleWishlist = () => {
+    setGame(prev => ({ ...prev, inWishlist: !prev.inWishlist }));
   };
 
-  const handleToggleWishlist = () => {
-    toast({
-      title: game.inWishlist ? 'Removed from Wishlist' : 'Added to Wishlist',
-      description: `${game.name} has been ${game.inWishlist ? 'removed from' : 'added to'} your wishlist`,
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+  const toggleCart = () => {
+    setGame(prev => ({ ...prev, inCart: !prev.inCart }));
   };
 
   if (loading) {
     return (
-      <Container maxW="container.xl" centerContent py={8}>
-        <Spinner size="xl" />
-      </Container>
-    );
-  }
-
-  if (!game) {
-    return (
-      <Container maxW="container.xl" centerContent py={8}>
-        <Heading>Game not found</Heading>
-      </Container>
+      <div className="loading">Loading...</div>
     );
   }
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="stretch">
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
-          <Box>
-            <Image
-              src={game.image || 'https://via.placeholder.com/600x400?text=Game+Image'}
-              alt={game.name}
-              borderRadius="lg"
-              width="100%"
-              height="400px"
-              objectFit="cover"
-            />
-          </Box>
+    <div className="game-details">
+      <div className="game-container">
+        <div className="game-header">
+          <img src={game.image} alt={game.title} className="game-image" />
+          <div className="game-info">
+            <h1 className="game-title">{game.title}</h1>
+            <div className="game-meta">
+              <div className="meta-item">
+                <FaGamepad className="meta-icon" />
+                <span>{game.genre}</span>
+              </div>
+              <div className="meta-item">
+                <FaCalendar className="meta-icon" />
+                <span>{game.releaseDate}</span>
+              </div>
+              <div className="meta-item">
+                <FaUsers className="meta-icon" />
+                <span>{game.playerCount}</span>
+              </div>
+              <div className="meta-item">
+                <FaStar className="meta-icon" />
+                <span>{game.rating}</span>
+              </div>
+            </div>
+            <div className="game-price">
+              {game.discount > 0 && (
+                <>
+                  <span className="original-price">${game.price}</span>
+                  <span className="discount-badge">-{game.discount}%</span>
+                </>
+              )}
+              <span className="discounted-price">
+                ${(game.price * (1 - game.discount / 100)).toFixed(2)}
+              </span>
+            </div>
+            <div className="action-buttons">
+              <button 
+                className="btn btn-primary"
+                onClick={toggleCart}
+              >
+                <FaShoppingCart className="btn-icon" />
+                {game.inCart ? 'Remove from Cart' : 'Add to Cart'}
+              </button>
+              <button 
+                className="btn btn-secondary"
+                onClick={toggleWishlist}
+              >
+                <FaHeart 
+                  className={`btn-icon ${game.inWishlist ? 'active' : ''}`}
+                />
+                {game.inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+              </button>
+              <button className="btn btn-secondary">
+                <FaBell className="btn-icon" />
+                Set Alert
+              </button>
+              <button className="btn btn-secondary">
+                <FaDownload className="btn-icon" />
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
 
-          <VStack align="stretch" spacing={6}>
-            <VStack align="stretch" spacing={2}>
-              <Heading size="2xl">{game.name}</Heading>
-              <HStack>
-                <Icon as={FaStar} color="yellow.400" />
-                <Text>{game.rating}/5</Text>
-                <Text color="gray.500">({game.reviews} reviews)</Text>
-              </HStack>
-            </VStack>
+        <div className="tabs">
+          <div className="tab-list">
+            <button 
+              className={`tab ${activeTab === 'description' ? 'active' : ''}`}
+              onClick={() => setActiveTab('description')}
+            >
+              Description
+            </button>
+            <button 
+              className={`tab ${activeTab === 'requirements' ? 'active' : ''}`}
+              onClick={() => setActiveTab('requirements')}
+            >
+              System Requirements
+            </button>
+            <button 
+              className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
+              onClick={() => setActiveTab('comments')}
+            >
+              Comments
+            </button>
+          </div>
 
-            <HStack spacing={4}>
-              {game.genres.map((genre, index) => (
-                <Badge key={index} colorScheme="blue" fontSize="sm">
-                  {genre}
-                </Badge>
+          <div className={`tab-panel ${activeTab === 'description' ? 'active' : ''}`}>
+            <p>{game.description}</p>
+            <h3>Features</h3>
+            <ul>
+              {game.features.map((feature, index) => (
+                <li key={index}>{feature}</li>
               ))}
-            </HStack>
+            </ul>
+          </div>
 
-            <Text fontSize="lg" color="gray.600">
-              {game.description}
-            </Text>
+          <div className={`tab-panel ${activeTab === 'requirements' ? 'active' : ''}`}>
+            <div className="requirements">
+              <div className="minimum">
+                <h3>Minimum Requirements</h3>
+                <ul>
+                  <li>OS: {game.requirements.minimum.os}</li>
+                  <li>Processor: {game.requirements.minimum.processor}</li>
+                  <li>Memory: {game.requirements.minimum.memory}</li>
+                  <li>Graphics: {game.requirements.minimum.graphics}</li>
+                  <li>Storage: {game.requirements.minimum.storage}</li>
+                </ul>
+              </div>
+              <div className="recommended">
+                <h3>Recommended Requirements</h3>
+                <ul>
+                  <li>OS: {game.requirements.recommended.os}</li>
+                  <li>Processor: {game.requirements.recommended.processor}</li>
+                  <li>Memory: {game.requirements.recommended.memory}</li>
+                  <li>Graphics: {game.requirements.recommended.graphics}</li>
+                  <li>Storage: {game.requirements.recommended.storage}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
 
-            <VStack align="stretch" spacing={4} bg="gray.50" p={4} borderRadius="md">
-              <HStack justify="space-between">
-                {game.discount > 0 ? (
-                  <HStack spacing={2}>
-                    <Text textDecoration="line-through" color="gray.500">
-                      ${game.price}
-                    </Text>
-                    <Text color="green.500" fontWeight="bold" fontSize="2xl">
-                      ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                    </Text>
-                    <Badge colorScheme="green" fontSize="lg">-{game.discount}%</Badge>
-                  </HStack>
-                ) : (
-                  <Text fontWeight="bold" fontSize="2xl">${game.price}</Text>
-                )}
-              </HStack>
-
-              <HStack spacing={4}>
-                <Button
-                  colorScheme="blue"
-                  size="lg"
-                  leftIcon={<Icon as={FaShoppingCart} />}
-                  flex={1}
-                  onClick={handleAddToCart}
-                >
-                  Add to Cart
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  colorScheme={game.inWishlist ? 'red' : 'gray'}
-                  onClick={handleToggleWishlist}
-                >
-                  <Icon as={game.inWishlist ? FaHeart : FaBell} />
-                </Button>
-              </HStack>
-            </VStack>
-
-            <SimpleGrid columns={2} spacing={4}>
-              <HStack>
-                <Icon as={FaCalendar} />
-                <Text>Release Date: {game.releaseDate}</Text>
-              </HStack>
-              <HStack>
-                <Icon as={FaGamepad} />
-                <Text>Developer: {game.developer}</Text>
-              </HStack>
-              <HStack>
-                <Icon as={FaUsers} />
-                <Text>Publisher: {game.publisher}</Text>
-              </HStack>
-              <HStack>
-                <Icon as={FaDownload} />
-                <Text>Size: {game.systemRequirements.minimum.storage}</Text>
-              </HStack>
-            </SimpleGrid>
-          </VStack>
-        </SimpleGrid>
-
-        <Tabs variant="line" colorScheme="blue">
-          <TabList borderBottomColor="gray.600">
-            <Tab color="whiteAlpha.900" _selected={{ color: 'blue.400', borderColor: 'blue.400' }}>Overview</Tab>
-            <Tab color="whiteAlpha.900" _selected={{ color: 'blue.400', borderColor: 'blue.400' }}>System Requirements</Tab>
-            <Tab color="whiteAlpha.900" _selected={{ color: 'blue.400', borderColor: 'blue.400' }}>Comments</Tab>
-          </TabList>
-
-          <TabPanels>
-            <TabPanel>
-              <VStack align="stretch" spacing={6}>
-                <Box>
-                  <Heading size="md" mb={4} color="whiteAlpha.900">About This Game</Heading>
-                  <Text color="whiteAlpha.800">{game.description}</Text>
-                </Box>
-
-                <Box>
-                  <Heading size="md" mb={4} color="whiteAlpha.900">Features</Heading>
-                  <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-                    {game.features.map((feature, index) => (
-                      <HStack key={index}>
-                        <Icon as={FaGamepad} color="blue.400" />
-                        <Text color="whiteAlpha.800">{feature}</Text>
-                      </HStack>
-                    ))}
-                  </SimpleGrid>
-                </Box>
-              </VStack>
-            </TabPanel>
-
-            <TabPanel>
-              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
-                <Box>
-                  <Heading size="md" mb={4} color="whiteAlpha.900">Minimum Requirements</Heading>
-                  <VStack align="stretch" spacing={3}>
-                    {Object.entries(game.systemRequirements.minimum).map(([key, value]) => (
-                      <HStack key={key} justify="space-between">
-                        <Text color="whiteAlpha.600" textTransform="capitalize">{key}:</Text>
-                        <Text color="whiteAlpha.900">{value}</Text>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </Box>
-
-                <Box>
-                  <Heading size="md" mb={4} color="whiteAlpha.900">Recommended Requirements</Heading>
-                  <VStack align="stretch" spacing={3}>
-                    {Object.entries(game.systemRequirements.recommended).map(([key, value]) => (
-                      <HStack key={key} justify="space-between">
-                        <Text color="whiteAlpha.600" textTransform="capitalize">{key}:</Text>
-                        <Text color="whiteAlpha.900">{value}</Text>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </Box>
-              </SimpleGrid>
-            </TabPanel>
-
-            <TabPanel>
-              <CommentSection gameId={id} />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </VStack>
-    </Container>
+          <div className={`tab-panel ${activeTab === 'comments' ? 'active' : ''}`}>
+            <CommentSection gameId={id} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

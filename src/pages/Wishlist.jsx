@@ -1,146 +1,140 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  SimpleGrid,
-  Image,
-  Text,
-  Heading,
-  Button,
-  VStack,
-  HStack,
-  Icon,
-  Badge,
-} from '@chakra-ui/react';
-import { FaShoppingCart, FaTrash, FaBell } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
+import '../styles/Wishlist.css';
 
 const Wishlist = () => {
   const [wishlistGames, setWishlistGames] = useState([
     {
       id: 1,
-      name: 'Starfield',
-      image: 'https://via.placeholder.com/300x200?text=Starfield',
+      name: 'The Legend of Zelda: Breath of the Wild',
       price: 59.99,
-      discount: 0,
-      releaseDate: '2023-09-06',
-      notifyOnSale: true
+      discount: 20,
+      rating: 4.9,
+      reviews: 2458,
+      image: 'https://via.placeholder.com/300x200',
+      addedDate: '2024-01-15'
     },
     {
       id: 2,
-      name: 'Baldur\'s Gate 3',
-      image: 'https://via.placeholder.com/300x200?text=Baldurs+Gate+3',
-      price: 59.99,
-      discount: 20,
-      releaseDate: '2023-08-03',
-      notifyOnSale: false
+      name: 'Super Mario Odyssey',
+      price: 49.99,
+      discount: 0,
+      rating: 4.8,
+      reviews: 1897,
+      image: 'https://via.placeholder.com/300x200',
+      addedDate: '2024-01-10'
     },
     {
       id: 3,
-      name: 'Dragon\'s Dogma 2',
-      image: 'https://via.placeholder.com/300x200?text=Dragons+Dogma+2',
-      price: 69.99,
-      discount: 0,
-      releaseDate: '2024-03-22',
-      notifyOnSale: true
+      name: 'Animal Crossing: New Horizons',
+      price: 54.99,
+      discount: 15,
+      rating: 4.7,
+      reviews: 3254,
+      image: 'https://via.placeholder.com/300x200',
+      addedDate: '2024-01-05'
     }
   ]);
 
-  const removeFromWishlist = (gameId) => {
+  const [showToast, setShowToast] = useState({ show: false, message: '', type: '' });
+
+  const handleRemoveFromWishlist = (gameId) => {
     setWishlistGames(wishlistGames.filter(game => game.id !== gameId));
+    showToastMessage('Game removed from wishlist');
   };
 
-  const toggleNotification = (gameId) => {
-    setWishlistGames(wishlistGames.map(game => 
-      game.id === gameId ? { ...game, notifyOnSale: !game.notifyOnSale } : game
-    ));
+  const handleAddToCart = (gameId) => {
+    // Add to cart logic here
+    showToastMessage('Game added to cart', 'success');
+  };
+
+  const showToastMessage = (message, type = 'success') => {
+    setShowToast({ show: true, message, type });
+    setTimeout(() => setShowToast({ show: false, message: '', type: '' }), 3000);
+  };
+
+  const calculateDiscountedPrice = (price, discount) => {
+    return (price * (1 - discount / 100)).toFixed(2);
   };
 
   return (
-    <Container maxW="container.xl" py={8} bg="gray.800">
-      <VStack spacing={8} align="stretch">
-        <Heading color="whiteAlpha.900">My Wishlist ({wishlistGames.length} games)</Heading>
+    <div className="wishlist-container">
+      <div className="wishlist-header">
+        <h1>My Wishlist</h1>
+        <p>{wishlistGames.length} games</p>
+      </div>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-          {wishlistGames.map((game) => (
-            <Box
-              key={game.id}
-              borderRadius="lg"
-              overflow="hidden"
-              bg="gray.800"
-              boxShadow="md"
-              transition="transform 0.2s"
-              _hover={{ transform: 'translateY(-4px)' }}
-            >
-              <Image
-                src={game.image}
-                alt={game.name}
-                height="200px"
-                width="100%"
-                objectFit="cover"
-              />
-              <Box p={4}>
-                <VStack align="stretch" spacing={3}>
-                  <HStack justify="space-between">
-                    <Heading size="md" color="whiteAlpha.900" noOfLines={2}>
-                      {game.name}
-                    </Heading>
-                    <Button
-                      variant="outline"
-                      colorScheme="red"
-                      onClick={() => removeFromWishlist(game.id)}
-                    >
-                      <Icon as={FaTrash} />
-                    </Button>
-                  </HStack>
+      <div className="wishlist-grid">
+        {wishlistGames.map(game => (
+          <div key={game.id} className="game-card">
+            <div className="game-image-container">
+              <img src={game.image} alt={game.name} className="game-image" />
+              {game.discount > 0 && (
+                <span className="discount-badge">-{game.discount}%</span>
+              )}
+            </div>
 
-                  <HStack justify="space-between" align="center">
-                    <VStack align="start" spacing={1}>
-                      <Text color="whiteAlpha.700">Release Date:</Text>
-                      <Text color="whiteAlpha.900">{game.releaseDate}</Text>
-                    </VStack>
-                    <Button
-                      variant="outline"
-                      colorScheme={game.notifyOnSale ? 'green' : 'gray'}
-                      onClick={() => toggleNotification(game.id)}
-                    >
-                      <Icon as={FaBell} />
-                    </Button>
-                  </HStack>
+            <div className="game-details">
+              <h3 className="game-title">{game.name}</h3>
+              
+              <div className="rating-container">
+                <FaStar className="star-icon" />
+                <span>{game.rating.toFixed(1)}</span>
+                <span className="reviews-count">({game.reviews} reviews)</span>
+              </div>
 
-                  <HStack justify="space-between" align="center">
-                    {game.discount > 0 ? (
-                      <HStack spacing={2}>
-                        <Text textDecoration="line-through" color="gray.400">
-                          ${game.price}
-                        </Text>
-                        <Text color="green.400" fontWeight="bold">
-                          ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                        </Text>
-                        <Badge colorScheme="green">-{game.discount}%</Badge>
-                      </HStack>
-                    ) : (
-                      <Text fontWeight="bold" color="whiteAlpha.900">
-                        ${game.price}
-                      </Text>
-                    )}
-                  </HStack>
+              <div className="price-container">
+                <div className="price-tag">
+                  {game.discount > 0 ? (
+                    <>
+                      <span className="original-price">${game.price}</span>
+                      <span className="discounted-price">
+                        ${calculateDiscountedPrice(game.price, game.discount)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="discounted-price">${game.price}</span>
+                  )}
+                </div>
+                
+                <div className="added-date">
+                  Added {new Date(game.addedDate).toLocaleDateString()}
+                </div>
+              </div>
 
-                  <HStack spacing={2}>
-                    <Button
-                      colorScheme="blue"
-                      leftIcon={<Icon as={FaShoppingCart} />}
-                      flex={1}
-                    >
-                      Add to Cart
-                    </Button>
-                  </HStack>
-                </VStack>
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
-      </VStack>
-    </Container>
+              <div className="action-buttons">
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleRemoveFromWishlist(game.id)}
+                >
+                  <FaHeart /> Remove
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleAddToCart(game.id)}
+                >
+                  <FaShoppingCart /> Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {wishlistGames.length === 0 && (
+        <div className="empty-wishlist">
+          <FaHeart className="empty-icon" />
+          <h2>Your wishlist is empty</h2>
+          <p>Browse the store to add games to your wishlist</p>
+        </div>
+      )}
+
+      {showToast.show && (
+        <div className={`toast ${showToast.type}`}>
+          {showToast.message}
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -1,0 +1,320 @@
+.messages-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  height: calc(100vh - 60px);
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+}
+
+/* Sidebar Styles */
+.messages-sidebar {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.search-container {
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input svg {
+  position: absolute;
+  left: var(--spacing-3);
+  color: var(--color-text-secondary);
+}
+
+.search-input input {
+  width: 100%;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-3) var(--spacing-8);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+}
+
+.search-input input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.contacts-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-2);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.contact-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.contact-item.active {
+  background-color: var(--color-bg-hover);
+}
+
+.contact-avatar {
+  position: relative;
+}
+
+.contact-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg-secondary);
+}
+
+.status-indicator.online {
+  background-color: var(--color-success);
+}
+
+.status-indicator.offline {
+  background-color: var(--color-text-secondary);
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-1);
+}
+
+.contact-header h3 {
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.contact-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-preview p {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unread-badge {
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Chat Content Styles */
+.messages-content {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chat-contact {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.chat-contact img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-contact-info h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.chat-contact-info .status {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+.chat-contact-info .status.online {
+  color: var(--color-success);
+}
+
+.options-button {
+  padding: var(--spacing-2);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: var(--transition-all);
+}
+
+.options-button:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.message {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+  max-width: 70%;
+}
+
+.message.sent {
+  margin-left: auto;
+}
+
+.message.received {
+  margin-right: auto;
+}
+
+.message-content {
+  background-color: var(--color-bg-tertiary);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+
+.message.sent .message-content {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.message-content p {
+  margin-bottom: var(--spacing-1);
+  line-height: 1.4;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.message.sent .message-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+}
+
+.chat-input input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.chat-input button {
+  padding: var(--spacing-3);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: var(--transition-all);
+}
+
+.chat-input button:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-primary);
+}
+
+.send-button {
+  color: var(--color-primary) !important;
+}
+
+.no-chat-selected {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .messages-container {
+    grid-template-columns: 1fr;
+  }
+
+  .messages-sidebar {
+    display: none;
+  }
+}

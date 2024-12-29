@@ -1,190 +1,174 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  VStack,
-  HStack,
-  Text,
-  Input,
-  Button,
-  Avatar,
-  Divider,
-  IconButton,
-  useColorModeValue,
-  Textarea,
-  Heading,
-  Badge,
-  Icon,
-  Flex,
-} from '@chakra-ui/react';
-import { FaPaperPlane, FaSmile, FaImage, FaGamepad } from 'react-icons/fa';
+import { FaSearch, FaPaperPlane, FaSmile, FaPaperclip, FaEllipsisV } from 'react-icons/fa';
+import '../styles/Message.css';
 
 const Message = () => {
-  const [messages, setMessages] = useState([
+  const [contacts] = useState([
     {
       id: 1,
-      sender: 'John Doe',
-      avatar: 'https://via.placeholder.com/40x40?text=JD',
-      content: 'Hey, want to play some Cyberpunk 2077?',
-      timestamp: '2024-01-15 14:30',
-      isOnline: true,
-      currentGame: 'Cyberpunk 2077'
+      name: 'Alex Johnson',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'online',
+      lastMessage: 'Want to play some Cyberpunk?',
+      timestamp: '2 min ago',
+      unread: 2
     },
     {
       id: 2,
-      sender: 'You',
-      content: 'Sure! Let me finish this quest first',
-      timestamp: '2024-01-15 14:31',
-      isSelf: true
+      name: 'Sarah Wilson',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'offline',
+      lastMessage: 'Thanks for the game recommendation!',
+      timestamp: '1 hour ago',
+      unread: 0
     },
     {
       id: 3,
-      sender: 'John Doe',
-      avatar: 'https://via.placeholder.com/40x40?text=JD',
-      content: 'No problem! I\'ll be in Night City',
-      timestamp: '2024-01-15 14:32',
-      isOnline: true,
-      currentGame: 'Cyberpunk 2077'
+      name: 'Mike Brown',
+      avatar: 'https://via.placeholder.com/40',
+      status: 'online',
+      lastMessage: 'Did you see the new DLC?',
+      timestamp: '3 hours ago',
+      unread: 1
     }
   ]);
 
-  const [newMessage, setNewMessage] = useState('');
-
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const message = {
-        id: messages.length + 1,
-        sender: 'You',
-        content: newMessage,
-        timestamp: new Date().toLocaleString(),
-        isSelf: true
-      };
-      setMessages([...messages, message]);
-      setNewMessage('');
+  const [messages] = useState([
+    {
+      id: 1,
+      senderId: 1,
+      text: 'Hey! Want to play some Cyberpunk?',
+      timestamp: '2:30 PM',
+      isRead: true
+    },
+    {
+      id: 2,
+      senderId: 'me',
+      text: 'Sure! Let me finish this quest first',
+      timestamp: '2:31 PM',
+      isRead: true
+    },
+    {
+      id: 3,
+      senderId: 1,
+      text: 'No problem, take your time',
+      timestamp: '2:32 PM',
+      isRead: false
     }
+  ]);
+
+  const [selectedContact, setSelectedContact] = useState(contacts[0]);
+  const [newMessage, setNewMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!newMessage.trim()) return;
+
+    // Add message handling logic here
+    setNewMessage('');
   };
 
   return (
-    <Flex direction="column" h="calc(100vh - 60px)" overflow="hidden">
-      <Container maxW="container.xl" h="full" py={4}>
-        <VStack spacing={4} h="full">
-          {/* Header */}
-          <HStack w="full" spacing={4} bg="gray.800" p={4} borderRadius="lg">
-            <Avatar
-              src="https://via.placeholder.com/40x40?text=JD"
-              name="John Doe"
+    <div className="messages-container">
+      <div className="messages-sidebar">
+        <div className="search-container">
+          <div className="search-input">
+            <FaSearch />
+            <input
+              type="text"
+              placeholder="Search messages..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <VStack align="start" spacing={1} flex={1}>
-              <HStack>
-                <Text fontWeight="bold">
-                  John Doe
-                </Text>
-                <Badge colorScheme="green">
-                  Online
-                </Badge>
-              </HStack>
-              <HStack>
-                <Icon as={FaGamepad} color="blue.400" />
-                <Text fontSize="sm" color="gray.300">
-                  Playing Cyberpunk 2077
-                </Text>
-              </HStack>
-            </VStack>
-          </HStack>
+          </div>
+        </div>
 
-          {/* Messages */}
-          <Box
-            flex={1}
-            w="full"
-            overflowY="auto"
-            bg="gray.800"
-            borderRadius="lg"
-            p={4}
-            css={{
-              '&::-webkit-scrollbar': {
-                width: '4px',
-              },
-              '&::-webkit-scrollbar-track': {
-                width: '6px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: '#4A5568',
-                borderRadius: '24px',
-              },
-            }}
-          >
-            <VStack spacing={4} align="stretch">
-              {messages.map((message) => (
-                <Box
+        <div className="contacts-list">
+          {contacts.map(contact => (
+            <div
+              key={contact.id}
+              className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
+              onClick={() => setSelectedContact(contact)}
+            >
+              <div className="contact-avatar">
+                <img src={contact.avatar} alt={contact.name} />
+                <span className={`status-indicator ${contact.status}`}></span>
+              </div>
+              <div className="contact-info">
+                <div className="contact-header">
+                  <h3>{contact.name}</h3>
+                  <span className="timestamp">{contact.timestamp}</span>
+                </div>
+                <div className="contact-preview">
+                  <p>{contact.lastMessage}</p>
+                  {contact.unread > 0 && (
+                    <span className="unread-badge">{contact.unread}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="messages-content">
+        {selectedContact ? (
+          <>
+            <div className="chat-header">
+              <div className="chat-contact">
+                <img src={selectedContact.avatar} alt={selectedContact.name} />
+                <div className="chat-contact-info">
+                  <h2>{selectedContact.name}</h2>
+                  <span className={`status ${selectedContact.status}`}>
+                    {selectedContact.status}
+                  </span>
+                </div>
+              </div>
+              <button className="options-button">
+                <FaEllipsisV />
+              </button>
+            </div>
+
+            <div className="chat-messages">
+              {messages.map(message => (
+                <div
                   key={message.id}
-                  alignSelf={message.isSelf ? 'flex-end' : 'flex-start'}
-                  maxW="70%"
+                  className={`message ${message.senderId === 'me' ? 'sent' : 'received'}`}
                 >
-                  <HStack
-                    spacing={2}
-                    bg={message.isSelf ? 'blue.600' : 'gray.700'}
-                    p={3}
-                    borderRadius="lg"
-                  >
-                    {!message.isSelf && (
-                      <Avatar
-                        size="sm"
-                        src={message.avatar}
-                        name={message.sender}
-                      />
-                    )}
-                    <VStack align={message.isSelf ? 'end' : 'start'} spacing={1}>
-                      <Text>{message.content}</Text>
-                      <Text color="whiteAlpha.600" fontSize="xs">
-                        {message.timestamp}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Box>
+                  <div className="message-content">
+                    <p>{message.text}</p>
+                    <span className="message-time">{message.timestamp}</span>
+                  </div>
+                </div>
               ))}
-            </VStack>
-          </Box>
+            </div>
 
-          {/* Input */}
-          <HStack w="full" spacing={2} bg="gray.800" p={4} borderRadius="lg">
-            <IconButton
-              icon={<FaImage />}
-              variant="ghost"
-              colorScheme="blue"
-              aria-label="Send image"
-            />
-            <IconButton
-              icon={<FaSmile />}
-              variant="ghost"
-              colorScheme="blue"
-              aria-label="Add emoji"
-            />
-            <Input
-              flex={1}
-              placeholder="Type a message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  handleSendMessage();
-                }
-              }}
-              bg="gray.700"
-              _placeholder={{ color: 'gray.400' }}
-              borderColor="gray.600"
-              _hover={{ borderColor: 'gray.500' }}
-              _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-            />
-            <IconButton
-              icon={<FaPaperPlane />}
-              colorScheme="blue"
-              aria-label="Send message"
-              onClick={handleSendMessage}
-            />
-          </HStack>
-        </VStack>
-      </Container>
-    </Flex>
+            <form className="chat-input" onSubmit={handleSendMessage}>
+              <button type="button" className="attach-button">
+                <FaPaperclip />
+              </button>
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              />
+              <button type="button" className="emoji-button">
+                <FaSmile />
+              </button>
+              <button type="submit" className="send-button">
+                <FaPaperPlane />
+              </button>
+            </form>
+          </>
+        ) : (
+          <div className="no-chat-selected">
+            <h2>Select a conversation to start messaging</h2>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

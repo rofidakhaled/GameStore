@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -6,22 +6,20 @@ import {
   HStack,
   Heading,
   Text,
-  Image,
-  Button,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Icon,
   Badge,
   SimpleGrid,
-  Divider,
   Avatar,
+  Button,
 } from '@chakra-ui/react';
-import { FaSearch, FaGamepad, FaClock, FaUserPlus, FaComment } from 'react-icons/fa';
+import { FaGamepad, FaClock, FaComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import SearchBar from '../components/SearchBar';
 
 const Friends = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+
   const friends = [
     {
       id: 1,
@@ -48,6 +46,14 @@ const Friends = () => {
     },
   ];
 
+  const filteredFriends = friends.filter((friend) =>
+    friend.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   const handleMessage = (friendId) => {
     navigate('/message');
   };
@@ -57,25 +63,12 @@ const Friends = () => {
       <VStack spacing={8} align="stretch">
         <Heading color="whiteAlpha.900">Friends</Heading>
 
-        {/* Search Bar */}
-        <InputGroup>
-          <InputLeftElement pointerEvents="none">
-            <Icon as={FaSearch} color="gray.500" />
-          </InputLeftElement>
-          <Input
-            placeholder="Search friends..."
-            bg="gray.800"
-            color="whiteAlpha.900"
-            _placeholder={{ color: 'gray.400' }}
-            borderColor="gray.600"
-            _hover={{ borderColor: 'gray.500' }}
-            _focus={{ borderColor: 'blue.300', boxShadow: 'none' }}
-          />
-        </InputGroup>
+        {/* New Search Bar */}
+        <SearchBar placeholder="Search friends..." onSearch={handleSearch} />
 
         {/* Friends List */}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
-          {friends.map((friend) => (
+          {filteredFriends.map((friend) => (
             <Box
               key={friend.id}
               bg="gray.800"
@@ -88,11 +81,7 @@ const Friends = () => {
               _hover={{ transform: 'translateY(-2px)' }}
             >
               <HStack spacing={4}>
-                <Avatar
-                  size="lg"
-                  src={friend.avatar}
-                  name={friend.name}
-                />
+                <Avatar size="lg" src={friend.avatar} name={friend.name} />
                 <VStack align="start" flex={1} spacing={1}>
                   <HStack justify="space-between" width="100%">
                     <Heading size="md" color="whiteAlpha.900">

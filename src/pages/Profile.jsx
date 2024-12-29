@@ -8,15 +8,9 @@ import {
   Heading,
   Image,
   Button,
-  Stat,
-  StatLabel,
-  StatNumber,
   SimpleGrid,
   Icon,
-  Divider,
-  useColorModeValue,
   Avatar,
-  AvatarBadge,
   Badge,
 } from '@chakra-ui/react';
 import { FaGamepad, FaUsers, FaTrophy, FaClock, FaEdit, FaCamera } from 'react-icons/fa';
@@ -35,22 +29,16 @@ const Profile = () => {
       game: 'Elden Ring',
       name: 'Master of Sorcery',
       description: 'Learn all sorceries',
-      date: '2 days ago',
-      image: bannerImages.featured,
     },
     {
       game: 'Cyberpunk 2077',
       name: 'Night City Legend',
       description: 'Complete all main missions',
-      date: '1 week ago',
-      image: bannerImages.new,
     },
     {
       game: 'Red Dead Redemption 2',
       name: 'True Western',
       description: 'Achieve 100% completion',
-      date: '2 weeks ago',
-      image: bannerImages.sale,
     },
   ];
 
@@ -63,6 +51,7 @@ const Profile = () => {
           height="200px"
           borderRadius="xl"
           overflow="hidden"
+          boxShadow="lg"
         >
           <Image
             src={bannerImages.featured}
@@ -76,20 +65,16 @@ const Profile = () => {
             bottom={-16}
             left={8}
             zIndex={2}
+            borderRadius="full"
+            boxShadow="lg"
+            overflow="hidden"
           >
             <Avatar
               size="2xl"
               src={avatarImages.default}
               border="4px solid"
-              borderColor="gray.800"
-              bg="gray.800"
-            >
-              <AvatarBadge
-                boxSize="1.25em"
-                bg="green.500"
-                borderColor="gray.800"
-              />
-            </Avatar>
+              borderColor="gray.900"
+            />
           </Box>
           <Button
             position="absolute"
@@ -104,16 +89,14 @@ const Profile = () => {
         </Box>
 
         {/* Profile Info */}
-        <Box pt={20} pb={4}>
-          <HStack justify="space-between">
-            <VStack align="start" spacing={1}>
-              <Heading size="xl" color="whiteAlpha.900">John Doe</Heading>
-              <Text color="gray.400">@johndoe</Text>
-            </VStack>
-            <Button leftIcon={<FaEdit />} colorScheme="blue">
+        <Box pt={12} pb={4} textAlign="center">
+          <VStack spacing={2}>
+            <Heading size="xl" color="whiteAlpha.900">John Doe</Heading>
+            <Text color="gray.400">@johndoe</Text>
+            <Button leftIcon={<FaEdit />} colorScheme="blue" size="xs">
               Edit Profile
             </Button>
-          </HStack>
+          </VStack>
         </Box>
 
         {/* Stats */}
@@ -130,10 +113,10 @@ const Profile = () => {
             >
               <VStack>
                 <Icon as={stat.icon} boxSize={6} color="blue.400" />
-                <Stat textAlign="center">
-                  <StatLabel color="gray.400">{stat.label}</StatLabel>
-                  <StatNumber color="whiteAlpha.900" fontSize="2xl">{stat.value}</StatNumber>
-                </Stat>
+                <Text fontWeight="bold" fontSize="lg" color="whiteAlpha.900">
+                  {stat.value}
+                </Text>
+                <Text color="gray.400">{stat.label}</Text>
               </VStack>
             </Box>
           ))}
@@ -148,24 +131,15 @@ const Profile = () => {
                 key={index}
                 bg="gray.800"
                 borderRadius="lg"
-                overflow="hidden"
-                boxShadow="md"
-                transition="transform 0.2s"
-                _hover={{ transform: 'translateY(-4px)' }}
+                p={4}
+                boxShadow="lg"
               >
-                <Image
-                  src={achievement.image}
-                  alt={achievement.game}
-                  h="120px"
-                  w="100%"
-                  objectFit="cover"
-                />
-                <Box p={4}>
-                  <Badge colorScheme="blue" mb={2}>{achievement.game}</Badge>
-                  <Heading size="md" color="whiteAlpha.900" mb={2}>{achievement.name}</Heading>
-                  <Text color="gray.400" fontSize="sm" mb={2}>{achievement.description}</Text>
-                  <Text color="blue.400" fontSize="sm">{achievement.date}</Text>
-                </Box>
+                <Text color="blue.400" fontWeight="bold">{achievement.game}</Text>
+                <Text fontSize="md" color="whiteAlpha.900">
+                  {achievement.name}
+                </Text>
+                <Text color="gray.400" fontSize="sm">
+                  {achievement.description}</Text>
               </Box>
             ))}
           </SimpleGrid>

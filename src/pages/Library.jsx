@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaDownload, FaPlay, FaClock, FaEllipsisH, FaStar } from 'react-icons/fa';
+import { FaDownload, FaPlay, FaClock, FaStar } from 'react-icons/fa';
 import '../styles/Library.css';
 
 const Library = () => {
@@ -10,7 +10,7 @@ const Library = () => {
     {
       id: 1,
       title: 'Cyberpunk 2077',
-      image: 'https://via.placeholder.com/300x400',
+      image: 'https://via.placeholder.com/400',
       lastPlayed: '2 hours ago',
       playtime: 45,
       installed: true,
@@ -21,7 +21,7 @@ const Library = () => {
     {
       id: 2,
       title: 'Red Dead Redemption 2',
-      image: 'https://via.placeholder.com/300x400',
+      image: 'https://via.placeholder.com/400',
       lastPlayed: 'Yesterday',
       playtime: 120,
       installed: true,
@@ -32,7 +32,7 @@ const Library = () => {
     {
       id: 3,
       title: 'Elden Ring',
-      image: 'https://via.placeholder.com/300x400',
+      image: 'https://via.placeholder.com/400',
       lastPlayed: '3 days ago',
       playtime: 80,
       installed: false,
@@ -124,9 +124,6 @@ const Library = () => {
                       <span>Install</span>
                     </button>
                   )}
-                  <button className="action-button icon-only">
-                    <FaEllipsisH />
-                  </button>
                 </div>
               </div>
 

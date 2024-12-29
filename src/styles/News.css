@@ -76,17 +76,19 @@
 }
 
 .tag {
-  background-color: #2a2a2a;
-  color: #fff;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid var(--color-gold-500);
 }
 
 .tag:hover {
-  background-color: #4a9eff;
+  background-color: var(--color-gold-500);
+  color: var(--color-bg);
 }
 
 .news-grid {
@@ -121,8 +123,8 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background-color: rgba(74, 158, 255, 0.9);
-  color: #fff;
+  background-color: var(--color-gold-500);
+  color: var(--color-bg);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -176,6 +178,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.news-tag {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-gold-500);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-gold-500);
 }
 
 @media (max-width: 768px) {

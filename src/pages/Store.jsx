@@ -194,7 +194,7 @@ const Store = () => {
               )}
             </div>
 
-            <div className="game-details">
+            <div className="store-game-details">
               <h3 className="game-title">{game.name}</h3>
               
               <div className="rating-container">

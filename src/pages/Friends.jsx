@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { FaUserFriends, FaGamepad, FaClock, FaCircle, FaPlus, FaSearch } from 'react-icons/fa';
+import { FaUserFriends, FaGamepad, FaClock, FaCircle, FaPlus, FaSearch, FaEnvelope } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Friends.css';
 
 const Friends = () => {
   const [activeTab, setActiveTab] = useState('online');
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const friends = [
     {
@@ -64,6 +66,10 @@ const Friends = () => {
     return matchesSearch && matchesTab;
   });
 
+  const handleMessage = (friendId) => {
+    navigate('/message');
+  };
+
   return (
     <div className="friends-container">
       <aside className="friends-sidebar">
@@ -119,10 +125,10 @@ const Friends = () => {
               <div className="request-info">
                 <h3>{request.name}</h3>
                 <p>{request.mutualFriends} mutual friends</p>
-              </div>
-              <div className="request-actions">
-                <button className="accept-button">Accept</button>
-                <button className="decline-button">Decline</button>
+                <div className="request-actions">
+                  <button className="accept-button">Accept</button>
+                  <button className="decline-button">Decline</button>
+                </div>
               </div>
             </div>
           ))}
@@ -175,7 +181,12 @@ const Friends = () => {
                     <span className="stat-value">{friend.gamesInCommon}</span>
                   </div>
                 </div>
-                <button className="more-options">•••</button>
+                <div className="friend-actions">
+                  <button className="message-button" onClick={() => handleMessage(friend.id)}>
+                    <FaEnvelope />
+                  </button>
+                  <button className="more-options">•••</button>
+                </div>
               </div>
             </div>
           ))}

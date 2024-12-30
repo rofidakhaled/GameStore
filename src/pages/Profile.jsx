@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaEdit, FaGamepad, FaHeart, FaStar, FaUserFriends } from 'react-icons/fa';
+import { FaGamepad, FaHeart, FaStar, FaUserFriends } from 'react-icons/fa';
+import { UserAvatar, ProgressBar } from '../components/shared';
 import '../styles/Profile.css';
 
 const Profile = () => {
@@ -22,25 +23,35 @@ const Profile = () => {
     ]
   });
 
+  const handleAvatarEdit = () => {
+    // Add avatar edit functionality
+    console.log('Edit avatar clicked');
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-header">
-        <div className="profile-avatar">
-          <img src="https://via.placeholder.com/150" alt="Profile" />
-          <button className="edit-avatar-btn">
-            <FaEdit />
-          </button>
-        </div>
+        <UserAvatar
+          src="https://via.placeholder.com/150"
+          alt={`${user.username}'s profile`}
+          size="xl"
+          editable
+          onEdit={handleAvatarEdit}
+          className="profile-avatar"
+        />
         <div className="profile-info">
           <h1 className="username">{user.username}</h1>
           <div className="level-info">
             <span className="level">Level {user.level}</span>
-            <div className="xp-bar">
-              <div 
-                className="xp-progress" 
-                style={{ width: `${(user.xp % 1000) / 10}%` }}
-              />
-            </div>
+            <ProgressBar
+              value={user.xp % 1000}
+              max={1000}
+              label="XP Progress"
+              showPercentage={false}
+              size="md"
+              color="blue"
+              className="xp-bar"
+            />
             <span className="xp-text">{user.xp} XP</span>
           </div>
         </div>
@@ -106,9 +117,14 @@ const Profile = () => {
                   <h3>{achievement.name}</h3>
                   <p>{achievement.description}</p>
                   <div className="achievement-progress">
-                    <div 
+                    <ProgressBar
+                      value={achievement.progress}
+                      max={100}
+                      label="Progress"
+                      showPercentage={true}
+                      size="sm"
+                      color="green"
                       className="progress-bar"
-                      style={{ width: `${achievement.progress}%` }}
                     />
                     <span className="progress-text">{achievement.progress}%</span>
                   </div>

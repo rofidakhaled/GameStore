@@ -1,0 +1,237 @@
+.game-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-card.store {
+  cursor: pointer;
+}
+
+.game-card.store:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.game-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; /* Changed from 56.25% (16:9) to 75% (4:3) for a taller image */
+  overflow: hidden;
+}
+
+.game-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.game-card:hover .game-image {
+  transform: scale(1.05);
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4757;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.game-details {
+  padding: 15px;
+}
+
+.game-title {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2d3436;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Store variant styles */
+.rating-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star-icon {
+  color: #ffd700;
+}
+
+.reviews-count {
+  color: #7f8c8d;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.game-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.price-tag {
+  display: flex;
+  flex-direction: column;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.discounted-price {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-icon {
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #7f8c8d;
+  transition: color 0.2s ease;
+}
+
+.action-icon:hover {
+  color: #2d3436;
+}
+
+.action-icon.cart.active {
+  color: #2ecc71;
+}
+
+.action-icon.wishlist.active {
+  color: #ff4757;
+}
+
+.action-icon.rate:hover {
+  color: #ffd700;
+}
+
+/* Library variant styles */
+.game-card.library .game-actions {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.game-card.library .game-image-container:hover .game-actions {
+  opacity: 1;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2d3436;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.action-button.primary {
+  background: rgba(46, 204, 113, 0.9);
+  color: white;
+}
+
+.action-button.primary:hover {
+  background: rgb(46, 204, 113);
+}
+
+.game-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.meta-icon {
+  font-size: 1.1em;
+}
+
+.game-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.status-badge.installed {
+  background: #e8f5e9;
+  color: #2ecc71;
+}
+
+.status-badge.not-installed {
+  background: #f8f9fa;
+  color: #7f8c8d;
+}
+
+.last-played {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+.additional-info {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #7f8c8d;
+}

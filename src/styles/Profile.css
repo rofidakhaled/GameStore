@@ -6,44 +6,14 @@
 
 .profile-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
+/* Adjust UserAvatar component styles */
 .profile-avatar {
-  position: relative;
-  width: 150px;
-  height: 150px;
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid var(--background-light);
-}
-
-.edit-avatar-btn {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: var(--primary-color);
-  color: var(--text-primary);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.edit-avatar-btn:hover {
-  background-color: var(--primary-hover);
+  flex-shrink: 0;
 }
 
 .profile-info {
@@ -52,7 +22,9 @@
 
 .username {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2d3748;
 }
 
 .level-info {
@@ -62,52 +34,41 @@
 }
 
 .level {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: #4a5568;
 }
 
+/* Adjust ProgressBar component styles */
 .xp-bar {
   flex: 1;
-  height: 8px;
-  background-color: var(--background-light);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.xp-progress {
-  height: 100%;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
+  max-width: 300px;
 }
 
 .xp-text {
-  color: var(--text-secondary);
+  color: #718096;
+  font-size: 0.875rem;
 }
 
 .profile-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .stat-card {
-  background-color: var(--background-light);
+  background: white;
   padding: 1.5rem;
-  border-radius: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: transform 0.2s;
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
 }
 
 .stat-icon {
-  font-size: 2rem;
-  color: var(--primary-color);
+  font-size: 1.5rem;
+  color: #4299e1;
 }
 
 .stat-info {
@@ -117,11 +78,13 @@
 
 .stat-value {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
+  color: #2d3748;
 }
 
 .stat-label {
-  color: var(--text-secondary);
+  font-size: 0.875rem;
+  color: #718096;
 }
 
 .profile-sections {
@@ -130,16 +93,18 @@
   gap: 2rem;
 }
 
-@media (max-width: 768px) {
-  .profile-sections {
-    grid-template-columns: 1fr;
-  }
+.recent-games, .achievements {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.recent-games h2,
-.achievements h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
 }
 
 .games-list {
@@ -152,33 +117,28 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background-color: var(--background-light);
-  padding: 1rem;
-  border-radius: 0.5rem;
-  transition: transform 0.2s;
-}
-
-.game-item:hover {
-  transform: translateX(4px);
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: #f7fafc;
 }
 
 .game-icon {
   width: 50px;
   height: 50px;
-  border-radius: 0.25rem;
-  object-fit: cover;
+  border-radius: 4px;
 }
 
 .game-details h3 {
-  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2d3748;
   margin-bottom: 0.25rem;
 }
 
 .game-meta {
   display: flex;
   gap: 0.5rem;
-  color: var(--text-secondary);
   font-size: 0.875rem;
+  color: #718096;
 }
 
 .achievements-list {
@@ -190,51 +150,61 @@
 .achievement-item {
   display: flex;
   gap: 1rem;
-  background-color: var(--background-light);
   padding: 1rem;
-  border-radius: 0.5rem;
+  background: #f7fafc;
+  border-radius: 6px;
 }
 
 .achievement-icon {
+  width: 40px;
+  height: 40px;
+  background: #4299e1;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background-color: var(--background-lighter);
-  border-radius: 0.5rem;
-  color: var(--warning);
+  color: white;
+}
+
+.achievement-details {
+  flex: 1;
 }
 
 .achievement-details h3 {
-  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2d3748;
   margin-bottom: 0.25rem;
 }
 
 .achievement-details p {
-  color: var(--text-secondary);
   font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  color: #718096;
+  margin-bottom: 0.75rem;
 }
 
 .achievement-progress {
-  position: relative;
-  height: 6px;
-  background-color: var(--background-lighter);
-  border-radius: 3px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.progress-bar {
-  height: 100%;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-}
+/* Adjust for mobile */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-.progress-text {
-  position: absolute;
-  top: -20px;
-  right: 0;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  .level-info {
+    flex-direction: column;
+  }
+
+  .xp-bar {
+    max-width: 100%;
+  }
+
+  .profile-sections {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,23 +1,33 @@
-# GameStore - Modern Game Distribution Platform
+# GameStore
 
-game sth sth
-- Dark theme UI
-- - Pagination and filtering
+A modern game distribution platform with a clean, minimalist interface.
 
 ## Features
 
-- **Game Store**
-  
-  
-  
-- **Game Library**
+- Game Store
+- Game Library
+- User Profile
+- News Section
+- Friends & Messages
+- Wishlist
+- Settings
 
+## Running the Project
 
-- **User Profile**
- 
+1. Install dependencies:
+```
+npm install
+```
 
-- **News Section**
- 
+2. Start development server:
+```
+npm run dev
+```
+
+3. Build for production:
+```
+npm run build:prod
+```
 
 ## Tech Stack
 
@@ -27,5 +37,3 @@ game sth sth
 - React Router
 - Axios
 - React Icons
-
-

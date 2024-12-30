@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
+import GameCard from '../components/GameCard';
 import '../styles/Wishlist.css';
 
 const Wishlist = () => {
@@ -66,58 +67,17 @@ const Wishlist = () => {
 
       <div className="wishlist-grid">
         {wishlistGames.map(game => (
-          <div key={game.id} className="game-card">
-            <div className="game-image-container">
-              <img src={game.image} alt={game.name} className="game-image" />
-              {game.discount > 0 && (
-                <span className="discount-badge">-{game.discount}%</span>
-              )}
-            </div>
-
-            <div className="game-details">
-              <h3 className="game-title">{game.name}</h3>
-              
-              <div className="rating-container">
-                <FaStar className="star-icon" />
-                <span>{game.rating.toFixed(1)}</span>
-                <span className="reviews-count">({game.reviews} reviews)</span>
+          <GameCard
+            key={game.id}
+            game={game}
+            onCartToggle={() => handleAddToCart(game.id)}
+            onWishlistToggle={() => handleRemoveFromWishlist(game.id)}
+            additionalInfo={
+              <div className="added-date">
+                Added {new Date(game.addedDate).toLocaleDateString()}
               </div>
-
-              <div className="price-container">
-                <div className="price-tag">
-                  {game.discount > 0 ? (
-                    <>
-                      <span className="original-price">${game.price}</span>
-                      <span className="discounted-price">
-                        ${calculateDiscountedPrice(game.price, game.discount)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="discounted-price">${game.price}</span>
-                  )}
-                </div>
-                
-                <div className="added-date">
-                  Added {new Date(game.addedDate).toLocaleDateString()}
-                </div>
-              </div>
-
-              <div className="action-buttons">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleRemoveFromWishlist(game.id)}
-                >
-                  <FaHeart /> Remove
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleAddToCart(game.id)}
-                >
-                  <FaShoppingCart /> Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
+            }
+          />
         ))}
       </div>
 

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { FaSearch, FaPaperPlane, FaSmile, FaPaperclip, FaEllipsisV } from 'react-icons/fa';
+import { FaPaperPlane, FaSmile, FaPaperclip, FaEllipsisV } from 'react-icons/fa';
+import SearchInput from '../components/SearchInput';
+import Avatar from '../components/Avatar';
+import StatusIndicator from '../components/StatusIndicator';
 import '../styles/Message.css';
 
 const Message = () => {
@@ -72,17 +75,11 @@ const Message = () => {
   return (
     <div className="messages-container">
       <div className="messages-sidebar">
-        <div className="search-container">
-          <div className="search-input">
-            <FaSearch />
-            <input
-              type="text"
-              placeholder="Search messages..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search messages..."
+        />
 
         <div className="contacts-list">
           {contacts.map(contact => (
@@ -91,10 +88,13 @@ const Message = () => {
               className={`contact-item ${selectedContact?.id === contact.id ? 'active' : ''}`}
               onClick={() => setSelectedContact(contact)}
             >
-              <div className="contact-avatar">
-                <img src={contact.avatar} alt={contact.name} />
-                <span className={`status-indicator ${contact.status}`}></span>
-              </div>
+              <Avatar
+                src={contact.avatar}
+                alt={contact.name}
+                size="medium"
+                showStatus={true}
+                status={contact.status}
+              />
               <div className="contact-info">
                 <div className="contact-header">
                   <h3>{contact.name}</h3>
@@ -117,7 +117,13 @@ const Message = () => {
           <>
             <div className="chat-header">
               <div className="chat-contact">
-                <img src={selectedContact.avatar} alt={selectedContact.name} />
+                <Avatar
+                  src={selectedContact.avatar}
+                  alt={selectedContact.name}
+                  size="medium"
+                  showStatus={true}
+                  status={selectedContact.status}
+                />
                 <div className="chat-contact-info">
                   <h2>{selectedContact.name}</h2>
                   <span className={`status ${selectedContact.status}`}>

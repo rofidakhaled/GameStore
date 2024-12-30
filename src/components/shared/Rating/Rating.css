@@ -1,0 +1,41 @@
+.rating-stars {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.star {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  color: #e2e8f0;
+}
+
+.star.active {
+  color: #fbbf24;
+}
+
+.star.readonly {
+  cursor: default;
+}
+
+.size-sm .star {
+  font-size: 16px;
+}
+
+.size-md .star {
+  font-size: 24px;
+}
+
+.size-lg .star {
+  font-size: 32px;
+}
+
+.star:hover:not(.readonly):not(.active) {
+  color: #fcd34d;
+}
+
+.star:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.6);
+  border-radius: 2px;
+}

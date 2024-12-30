@@ -126,7 +126,6 @@
 
 .request-card {
   display: flex;
-  align-items: center;
   gap: var(--spacing-4);
   padding: var(--spacing-4);
   border-radius: var(--radius-md);
@@ -144,6 +143,10 @@
   border-radius: 50%;
 }
 
+.request-info {
+  flex: 1;
+}
+
 .request-info h3 {
   font-size: 1rem;
   font-weight: 500;
@@ -154,22 +157,24 @@
 .request-info p {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2);
 }
 
 .request-actions {
-  margin-left: auto;
   display: flex;
+  flex-direction: column;
   gap: var(--spacing-2);
 }
 
 .accept-button,
 .decline-button {
-  padding: var(--spacing-1) var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   border: none;
   cursor: pointer;
   transition: var(--transition-all);
+  width: 100%;
 }
 
 .accept-button {
@@ -332,6 +337,33 @@
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-text);
+}
+
+.friend-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.message-button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2);
+  cursor: pointer;
+  transition: var(--transition-all);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.message-button svg {
+  font-size: 1rem;
 }
 
 .more-options {

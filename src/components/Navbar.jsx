@@ -1,61 +1,61 @@
-// Navbar.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  FaHome,
+  FaStore,
+  FaGamepad,
+  FaUser,
+  FaHeart,
+  FaNewspaper,
+  FaUsers,
+  FaCog,
+  FaShoppingCart,
+} from 'react-icons/fa';
+import './Navbar.css';
 
 const Navbar = () => {
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
+
+  const links = [
+    { name: 'Home', path: '/', icon: <FaHome /> },
+    { name: 'Store', path: '/store', icon: <FaStore /> },
+    { name: 'Library', path: '/library', icon: <FaGamepad /> },
+    { name: 'Profile', path: '/profile', icon: <FaUser /> },
+    { name: 'Wishlist', path: '/wishlist', icon: <FaHeart /> },
+    { name: 'News', path: '/news', icon: <FaNewspaper /> },
+    { name: 'Friends', path: '/friends', icon: <FaUsers /> },
+    { name: 'Settings', path: '/settings', icon: <FaCog /> },
+  ];
+
   return (
-    React.createElement('nav', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#333', padding: '10px 20px', fontFamily: 'Arial, sans-serif' } },
-      React.createElement('div', null,
-        React.createElement(Link, { to: '/' },
-          React.createElement('img', {
-            src: 'https://via.placeholder.com/40x40?text=GS',
-            alt: 'GameStore',
-            style: { width: '40px', height: '40px', borderRadius: '5px' }
-          })
-        )
-      ),
-      React.createElement('ul', { style: { listStyle: 'none', display: 'flex', gap: '20px', padding: 0, margin: 0 } },
-        [
-          { path: '/', label: 'Home' },
-          { path: '/store', label: 'Store' },
-          { path: '/library', label: 'Library' },
-          { path: '/profile', label: 'Profile' },
-          { path: '/wishlist', label: 'Wishlist' },
-          { path: '/news', label: 'News' },
-          { path: '/friends', label: 'Friends' },
-          { path: '/settings', label: 'Settings' },
-        ].map(link => (
-          React.createElement('li', { key: link.path },
-            React.createElement(Link, {
-              to: link.path,
-              style: { textDecoration: 'none', color: '#fff', fontSize: '16px', transition: 'color 0.2s' },
-              onMouseOver: (e) => (e.target.style.color = '#007BFF'),
-              onMouseOut: (e) => (e.target.style.color = '#fff')
-            }, link.label)
-          )
-        ))
-      ),
-      React.createElement('div', null,
-        React.createElement(Link, {
-          to: '/cart',
-          style: { position: 'relative', textDecoration: 'none', color: '#fff', fontSize: '16px' }
-        },
-          'Cart',
-          React.createElement('span', {
-            style: {
-              position: 'absolute',
-              top: '-5px',
-              right: '-10px',
-              backgroundColor: '#FF4136',
-              color: '#fff',
-              borderRadius: '50%',
-              padding: '2px 6px',
-              fontSize: '12px'
-            }
-          }, '3')
-        )
-      )
-    )
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-left">
+          <Link to="/" className="navbar-logo">
+            <img src="https://via.placeholder.com/40x40?text=GS" alt="GameStore" />
+          </Link>
+          <ul className="navbar-links">
+            {links.map((link) => (
+              <li key={link.path} className={isActive(link.path) ? 'active' : ''}>
+                <Link to={link.path} className="navbar-link">
+                  {link.icon}
+                  <span>{link.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="navbar-right">
+          <Link to="/cart" className={`navbar-cart ${isActive('/cart') ? 'active' : ''}`}>
+            <FaShoppingCart />
+            <span>Cart</span>
+            <span className="cart-badge">3</span>
+          </Link>
+        </div>
+      </div>
+    </nav>
   );
 };
 

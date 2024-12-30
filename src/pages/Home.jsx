@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFire, FaGamepad, FaStar, FaTag, FaShoppingCart, FaHeart } from 'react-icons/fa';
+import GameCard from '../components/GameCard';
 import '../styles/Home.css';
 
 const Home = () => {
@@ -80,48 +81,12 @@ const Home = () => {
         <h2>Featured Games</h2>
         <div className="featured-games">
           {games.map((game) => (
-            <div key={game.id} className="game-card">
-              <div className="game-image-container">
-                <img className="game-image" src={game.image} alt={game.title} />
-                {game.discount > 0 && (
-                  <span className="discount-badge">-{game.discount}%</span>
-                )}
-              </div>
-              <div className="game-details">
-                <h3 className="game-title">{game.title}</h3>
-                <div className="rating-container">
-                  <FaStar className="star-icon" />
-                  <span>{game.rating.toFixed(1)}</span>
-                  <span className="reviews-count">({game.reviews} reviews)</span>
-                </div>
-                <div className="price-container">
-                  <div className="price-tag">
-                    {game.discount > 0 ? (
-                      <>
-                        <span className="original-price">${game.price}</span>
-                        <span className="discounted-price">
-                          ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="discounted-price">${game.price}</span>
-                    )}
-                  </div>
-                  <div className="action-buttons">
-                    <FaShoppingCart 
-                      className={`action-icon cart ${game.inCart ? 'active' : ''}`}
-                      title={game.inCart ? 'Remove from Cart' : 'Add to Cart'}
-                      onClick={() => toggleCart(game.id)}
-                    />
-                    <FaHeart 
-                      className={`action-icon wishlist ${game.inWishlist ? 'active' : ''}`}
-                      title={game.inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-                      onClick={() => toggleWishlist(game.id)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <GameCard
+              key={game.id}
+              game={game}
+              onCartToggle={(game) => toggleCart(game.id)}
+              onWishlistToggle={(game) => toggleWishlist(game.id)}
+            />
           ))}
         </div>
       </section>

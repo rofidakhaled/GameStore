@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaEdit, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import axios from 'axios';
 import { gameCoverImages, bannerImages } from '../assets/images';
 import '../styles/Store.css';
+import GameCard from '../components/GameCard';
 
 const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
   const [rating, setRating] = useState(selectedGame?.rating || 0);
@@ -49,6 +50,7 @@ const Store = () => {
   const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState(null);
   const [games, setGames] = useState([]);
+  const [cartItems, setCartItems] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -118,6 +120,21 @@ const Store = () => {
     showToastMessage(game.inWishlist ? 'Removed from wishlist' : 'Added to wishlist');
   };
 
+  const handleToggleCart = (game, e) => {
+    e.stopPropagation();
+    setCartItems(prev => {
+      const newCart = new Set(prev);
+      if (newCart.has(game.id)) {
+        newCart.delete(game.id);
+        showToastMessage('Removed from cart');
+      } else {
+        newCart.add(game.id);
+        showToastMessage('Added to cart');
+      }
+      return newCart;
+    });
+  };
+
   const filteredGames = games.filter(game =>
     game.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -166,99 +183,41 @@ const Store = () => {
 
       <div className="games-grid">
         {paginatedGames.map((game) => (
-          <div
+          <GameCard
             key={game.id}
-            className="game-card"
-            onClick={() => navigate(`/game/${game.id}`)}
-          >
-            <div className="game-image-container">
-              <img className="game-image" src={game.image} alt={game.name} />
-              {game.discount > 0 && (
-                <span className="discount-badge">-{game.discount}%</span>
-              )}
-            </div>
-
-            <div className="game-details">
-              <h3 className="game-title">{game.name}</h3>
-              
-              <div className="rating-container">
-                <FaStar className="star-icon" />
-                <span>{game.rating.toFixed(1)}</span>
-                <span className="reviews-count">({game.reviews} reviews)</span>
-              </div>
-
-              <div className="price-container">
-                <div className="price-tag">
-                  {game.discount > 0 ? (
-                    <>
-                      <span className="original-price">${game.price}</span>
-                      <span className="discounted-price">
-                        ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="discounted-price">${game.price}</span>
-                  )}
-                </div>
-                
-                <div className="action-buttons">
-                  <FaHeart
-                    className={`action-icon wishlist ${game.inWishlist ? 'active' : ''}`}
-                    onClick={(e) => handleToggleWishlist(game, e)}
-                  />
-                  <FaEdit
-                    className="action-icon"
-                    onClick={(e) => handleRateGame(game, e)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+            game={game}
+            onCartToggle={(game) => handleToggleCart(game, { stopPropagation: () => {} })}
+            onWishlistToggle={(game) => handleToggleWishlist(game, { stopPropagation: () => {} })}
+            onRate={(game) => handleRateGame(game, { stopPropagation: () => {} })}
+          />
         ))}
       </div>
 
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button
-            className="pagination-button"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <FaChevronLeft /> Previous
-          </button>
-          
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNum = index + 1;
-            if (
-              pageNum === 1 ||
-              pageNum === totalPages ||
-              (pageNum >= currentPage - 2 && pageNum <= currentPage + 2)
-            ) {
-              return (
-                <button
-                  key={pageNum}
-                  className={`pagination-button ${currentPage === pageNum ? 'active' : ''}`}
-                  onClick={() => handlePageChange(pageNum)}
-                >
-                  {pageNum}
-                </button>
-              );
-            } else if (
-              pageNum === currentPage - 3 ||
-              pageNum === currentPage + 3
-            ) {
-              return <span key={pageNum}>...</span>;
-            }
-            return null;
-          })}
+      <div className="pagination">
+        <button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <FaChevronLeft />
+          <span>Previous</span>
+        </button>
+        <span className="page-info">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <span>Next</span>
+          <FaChevronRight />
+        </button>
+      </div>
 
-          <button
-            className="pagination-button"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next <FaChevronRight />
-          </button>
+      {showToast.show && (
+        <div className={`toast ${showToast.type}`}>
+          {showToast.message}
         </div>
       )}
 
@@ -268,12 +227,6 @@ const Store = () => {
         selectedGame={selectedGame}
         onSubmit={handleSubmitRating}
       />
-
-      {showToast.show && (
-        <div className={`toast ${showToast.type}`}>
-          {showToast.message}
-        </div>
-      )}
     </div>
   );
 };

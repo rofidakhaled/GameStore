@@ -15,6 +15,7 @@ import Message from './pages/Message';
 import Article from './pages/Article';
 import FriendProfile from './pages/FriendProfile';
 import './styles/global.css';
+import './styles/variables.css';
 
 function App() {
   return (

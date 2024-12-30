@@ -11,16 +11,19 @@ import {
   FaThumbsUp,
   FaReply,
   FaEllipsisV,
+  FaStar
 } from 'react-icons/fa';
 import '../styles/GameDetails.css';
-import Rating from '../components/Rating/Rating';
-import Comment from '../components/Comments/Comment';
+import Rating from '../components/shared/Rating/Rating';
+import Modal from '../components/shared/Modal/Modal';
+import Comment from '../components/shared/Comments/Comment';
 
 const CommentSection = ({ gameId }) => {
   const [comments, setComments] = useState([
     {
       id: 1,
       user: {
+        id: 'user1',
         name: 'John Doe',
         avatar: 'https://via.placeholder.com/40x40?text=JD',
         isVerified: true,
@@ -28,10 +31,12 @@ const CommentSection = ({ gameId }) => {
       content: 'This game is absolutely amazing! The graphics and gameplay are top-notch.',
       timestamp: '2024-12-26T20:00:00',
       likes: 15,
+      liked: false,
       replies: [
         {
           id: 2,
           user: {
+            id: 'user2',
             name: 'Jane Smith',
             avatar: 'https://via.placeholder.com/40x40?text=JS',
             isVerified: false,
@@ -39,12 +44,14 @@ const CommentSection = ({ gameId }) => {
           content: 'I agree! The story is particularly engaging.',
           timestamp: '2024-12-26T20:30:00',
           likes: 5,
+          liked: false,
         }
       ]
     },
     {
       id: 3,
       user: {
+        id: 'user3',
         name: 'Mike Wilson',
         avatar: 'https://via.placeholder.com/40x40?text=MW',
         isVerified: false,
@@ -52,6 +59,7 @@ const CommentSection = ({ gameId }) => {
       content: 'The multiplayer mode is really fun with friends. Highly recommended!',
       timestamp: '2024-12-26T19:00:00',
       likes: 8,
+      liked: false,
       replies: []
     }
   ]);
@@ -65,6 +73,7 @@ const CommentSection = ({ gameId }) => {
     const comment = {
       id: Date.now(),
       user: {
+        id: 'currentUser',
         name: 'Current User',
         avatar: 'https://via.placeholder.com/40x40?text=CU',
         isVerified: true,
@@ -72,6 +81,7 @@ const CommentSection = ({ gameId }) => {
       content: newComment,
       timestamp: new Date().toISOString(),
       likes: 0,
+      liked: false,
       replies: []
     };
 
@@ -85,6 +95,7 @@ const CommentSection = ({ gameId }) => {
     const reply = {
       id: Date.now(),
       user: {
+        id: 'currentUser',
         name: 'Current User',
         avatar: 'https://via.placeholder.com/40x40?text=CU',
         isVerified: true,
@@ -92,6 +103,7 @@ const CommentSection = ({ gameId }) => {
       content: replyContent,
       timestamp: new Date().toISOString(),
       likes: 0,
+      liked: false,
     };
 
     setComments(comments.map(comment => 
@@ -112,7 +124,7 @@ const CommentSection = ({ gameId }) => {
               ...comment,
               replies: comment.replies.map(reply =>
                 reply.id === commentId
-                  ? { ...reply, likes: reply.likes + 1 }
+                  ? { ...reply, likes: reply.liked ? reply.likes - 1 : reply.likes + 1, liked: !reply.liked }
                   : reply
               )
             }
@@ -121,107 +133,32 @@ const CommentSection = ({ gameId }) => {
     } else {
       setComments(comments.map(comment =>
         comment.id === commentId
-          ? { ...comment, likes: comment.likes + 1 }
+          ? { ...comment, likes: comment.liked ? comment.likes - 1 : comment.likes + 1, liked: !comment.liked }
           : comment
       ));
     }
   };
 
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const handleDelete = (commentId) => {
+    setComments(prevComments => 
+      prevComments.filter(comment => {
+        if (comment.id === commentId) return false;
+        if (comment.replies) {
+          comment.replies = comment.replies.filter(reply => reply.id !== commentId);
+        }
+        return true;
+      })
+    );
   };
-
-  const Comment = ({ comment, isReply = false, parentId = null }) => (
-    <div className="comment">
-      <div className="comment-header">
-        <div className="comment-user">
-          <img 
-            src={comment.user.avatar} 
-            alt={comment.user.name} 
-            className="user-avatar"
-          />
-          <div>
-            <span className="user-name">{comment.user.name}</span>
-            {comment.user.isVerified && (
-              <span className="verified-badge">Verified</span>
-            )}
-          </div>
-          <span className="comment-timestamp">
-            {formatTimestamp(comment.timestamp)}
-          </span>
-        </div>
-      </div>
-      <div className="comment-content">{comment.content}</div>
-      <div className="comment-actions">
-        <button 
-          className="action-button"
-          onClick={() => handleLike(comment.id, isReply, parentId)}
-        >
-          <FaThumbsUp /> {comment.likes}
-        </button>
-        {!isReply && (
-          <button 
-            className="action-button"
-            onClick={() => setReplyingTo(comment.id)}
-          >
-            <FaReply /> Reply
-          </button>
-        )}
-      </div>
-      {replyingTo === comment.id && (
-        <div className="reply-input">
-          <textarea
-            className="comment-textarea"
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            placeholder="Write a reply..."
-          />
-          <div className="action-buttons">
-            <button 
-              className="btn btn-primary"
-              onClick={() => handleAddReply(comment.id)}
-            >
-              Reply
-            </button>
-            <button 
-              className="btn btn-secondary"
-              onClick={() => setReplyingTo(null)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {!isReply && comment.replies.length > 0 && (
-        <div className="replies">
-          {comment.replies.map(reply => (
-            <Comment 
-              key={reply.id} 
-              comment={reply} 
-              isReply={true} 
-              parentId={comment.id}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <div className="comments-section">
       <div className="comment-input">
         <textarea
-          className="comment-textarea"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Write a comment..."
+          className="comment-textarea"
         />
         <button 
           className="btn btn-primary"
@@ -232,7 +169,14 @@ const CommentSection = ({ gameId }) => {
       </div>
       <div className="comments-list">
         {comments.map(comment => (
-          <Comment key={comment.id} comment={comment} />
+          <Comment
+            key={comment.id}
+            comment={comment}
+            onReply={() => setReplyingTo(comment.id)}
+            onLike={handleLike}
+            onDelete={handleDelete}
+            currentUserId="currentUser"
+          />
         ))}
       </div>
     </div>

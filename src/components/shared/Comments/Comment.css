@@ -1,0 +1,135 @@
+.comment {
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.comment:hover {
+  border-color: var(--color-gold-500);
+  transform: translateY(-2px);
+}
+
+.comment.reply {
+  margin-left: var(--spacing-8);
+  background-color: var(--color-bg-secondary);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-3);
+}
+
+.comment-user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-gold-500);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.verified-badge {
+  color: var(--color-gold-500);
+  font-size: 0.875rem;
+}
+
+.comment-timestamp {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.comment-menu {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-1);
+  transition: color 0.2s;
+}
+
+.comment-menu:hover {
+  color: var(--color-gold-500);
+}
+
+.comment-content {
+  color: var(--color-text);
+  line-height: 1.6;
+  margin: var(--spacing-3) 0;
+  font-size: 0.9rem;
+}
+
+.comment-actions {
+  display: flex;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-3);
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  border-color: var(--color-gold-500);
+  color: var(--color-gold-500);
+}
+
+.action-button.liked {
+  background-color: var(--color-gold-500);
+  border-color: var(--color-gold-500);
+  color: var(--color-bg);
+}
+
+.replies {
+  margin-top: var(--spacing-4);
+  padding-left: var(--spacing-4);
+  border-left: 2px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .comment.reply {
+    margin-left: var(--spacing-4);
+  }
+  
+  .comment-user {
+    gap: var(--spacing-2);
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}

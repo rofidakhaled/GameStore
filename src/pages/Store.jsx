@@ -5,8 +5,8 @@ import axios from 'axios';
 import { gameCoverImages, bannerImages } from '../assets/images';
 import '../styles/Store.css';
 import GameCard from '../components/GameCard';
-import Modal from '../components/Modal/Modal';
-import Rating from '../components/Rating/Rating';
+import Modal from '../components/shared/Modal/Modal';
+import Rating from '../components/shared/Rating/Rating';
 
 const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
   const [rating, setRating] = useState(selectedGame?.rating || 0);

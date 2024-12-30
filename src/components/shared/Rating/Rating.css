@@ -1,0 +1,46 @@
+.rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.rating label {
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.rating input[type="radio"] {
+  display: none;
+}
+
+.star {
+  transition: color 0.2s ease-in-out;
+}
+
+.star.active {
+  color: var(--color-gold-500);
+}
+
+.star.readonly {
+  cursor: default;
+}
+
+/* Size variants */
+.rating-sm .star {
+  font-size: 1rem;
+}
+
+.rating-md .star {
+  font-size: 1.5rem;
+}
+
+.rating-lg .star {
+  font-size: 2rem;
+}
+
+/* Hover effects */
+.rating label:hover .star:not(.readonly),
+.rating label:hover ~ label .star:not(.readonly) {
+  color: var(--color-gold-500);
+  transform: scale(1.1);
+}

@@ -33,7 +33,6 @@ npm run build:prod
 
 - React
 - Vite
-- Chakra UI
 - React Router
 - Axios
 - React Icons

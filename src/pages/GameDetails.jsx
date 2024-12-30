@@ -4,7 +4,6 @@ import {
   FaShoppingCart, 
   FaBell, 
   FaHeart, 
-  FaStar, 
   FaDownload, 
   FaUsers, 
   FaCalendar, 
@@ -14,6 +13,8 @@ import {
   FaEllipsisV,
 } from 'react-icons/fa';
 import '../styles/GameDetails.css';
+import Rating from '../components/Rating/Rating';
+import Comment from '../components/Comments/Comment';
 
 const CommentSection = ({ gameId }) => {
   const [comments, setComments] = useState([

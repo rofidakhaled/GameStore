@@ -1,0 +1,38 @@
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star {
+  cursor: pointer;
+  transition: color 0.2s;
+  color: #ccc;
+}
+
+.star.active {
+  color: #ffd700;
+}
+
+.star.readonly {
+  cursor: default;
+}
+
+.rating-value {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Size variants */
+.size-sm .star {
+  font-size: 14px;
+}
+
+.size-md .star {
+  font-size: 18px;
+}
+
+.size-lg .star {
+  font-size: 24px;
+}

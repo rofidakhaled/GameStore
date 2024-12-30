@@ -1,0 +1,32 @@
+.level-info {
+  margin-top: 1rem;
+}
+
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.level {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.xp-text {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.level-rewards {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.next-reward {
+  color: var(--color-gold-500);
+  font-weight: 500;
+}

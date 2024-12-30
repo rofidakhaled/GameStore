@@ -1,0 +1,23 @@
+.badge-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-tertiary);
+  border-radius: 20px;
+  transition: transform 0.2s ease;
+}
+
+.badge-item:hover {
+  transform: translateY(-2px);
+}
+
+.badge-icon {
+  font-size: 1.25rem;
+}
+
+.badge-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+}

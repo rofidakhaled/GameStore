@@ -1,10 +1,242 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import GameHeader from '../components/GameHeader';
-import GameTabs, { TabPanel } from '../components/GameTabs';
-import GameRequirements from '../components/GameRequirements';
-import CommentSection from '../components/CommentSection';
+import { 
+  FaShoppingCart, 
+  FaBell, 
+  FaHeart, 
+  FaStar, 
+  FaDownload, 
+  FaUsers, 
+  FaCalendar, 
+  FaGamepad,
+  FaThumbsUp,
+  FaReply,
+  FaEllipsisV,
+} from 'react-icons/fa';
 import '../styles/GameDetails.css';
+
+const CommentSection = ({ gameId }) => {
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      user: {
+        name: 'John Doe',
+        avatar: 'https://via.placeholder.com/40x40?text=JD',
+        isVerified: true,
+      },
+      content: 'This game is absolutely amazing! The graphics and gameplay are top-notch.',
+      timestamp: '2024-12-26T20:00:00',
+      likes: 15,
+      replies: [
+        {
+          id: 2,
+          user: {
+            name: 'Jane Smith',
+            avatar: 'https://via.placeholder.com/40x40?text=JS',
+            isVerified: false,
+          },
+          content: 'I agree! The story is particularly engaging.',
+          timestamp: '2024-12-26T20:30:00',
+          likes: 5,
+        }
+      ]
+    },
+    {
+      id: 3,
+      user: {
+        name: 'Mike Wilson',
+        avatar: 'https://via.placeholder.com/40x40?text=MW',
+        isVerified: false,
+      },
+      content: 'The multiplayer mode is really fun with friends. Highly recommended!',
+      timestamp: '2024-12-26T19:00:00',
+      likes: 8,
+      replies: []
+    }
+  ]);
+  const [newComment, setNewComment] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyContent, setReplyContent] = useState('');
+
+  const handleAddComment = () => {
+    if (!newComment.trim()) return;
+
+    const comment = {
+      id: Date.now(),
+      user: {
+        name: 'Current User',
+        avatar: 'https://via.placeholder.com/40x40?text=CU',
+        isVerified: true,
+      },
+      content: newComment,
+      timestamp: new Date().toISOString(),
+      likes: 0,
+      replies: []
+    };
+
+    setComments([comment, ...comments]);
+    setNewComment('');
+  };
+
+  const handleAddReply = (commentId) => {
+    if (!replyContent.trim()) return;
+
+    const reply = {
+      id: Date.now(),
+      user: {
+        name: 'Current User',
+        avatar: 'https://via.placeholder.com/40x40?text=CU',
+        isVerified: true,
+      },
+      content: replyContent,
+      timestamp: new Date().toISOString(),
+      likes: 0,
+    };
+
+    setComments(comments.map(comment => 
+      comment.id === commentId
+        ? { ...comment, replies: [...comment.replies, reply] }
+        : comment
+    ));
+
+    setReplyingTo(null);
+    setReplyContent('');
+  };
+
+  const handleLike = (commentId, isReply = false, parentId = null) => {
+    if (isReply) {
+      setComments(comments.map(comment => 
+        comment.id === parentId
+          ? {
+              ...comment,
+              replies: comment.replies.map(reply =>
+                reply.id === commentId
+                  ? { ...reply, likes: reply.likes + 1 }
+                  : reply
+              )
+            }
+          : comment
+      ));
+    } else {
+      setComments(comments.map(comment =>
+        comment.id === commentId
+          ? { ...comment, likes: comment.likes + 1 }
+          : comment
+      ));
+    }
+  };
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const Comment = ({ comment, isReply = false, parentId = null }) => (
+    <div className="comment">
+      <div className="comment-header">
+        <div className="comment-user">
+          <img 
+            src={comment.user.avatar} 
+            alt={comment.user.name} 
+            className="user-avatar"
+          />
+          <div>
+            <span className="user-name">{comment.user.name}</span>
+            {comment.user.isVerified && (
+              <span className="verified-badge">Verified</span>
+            )}
+          </div>
+          <span className="comment-timestamp">
+            {formatTimestamp(comment.timestamp)}
+          </span>
+        </div>
+      </div>
+      <div className="comment-content">{comment.content}</div>
+      <div className="comment-actions">
+        <button 
+          className="action-button"
+          onClick={() => handleLike(comment.id, isReply, parentId)}
+        >
+          <FaThumbsUp /> {comment.likes}
+        </button>
+        {!isReply && (
+          <button 
+            className="action-button"
+            onClick={() => setReplyingTo(comment.id)}
+          >
+            <FaReply /> Reply
+          </button>
+        )}
+      </div>
+      {replyingTo === comment.id && (
+        <div className="reply-input">
+          <textarea
+            className="comment-textarea"
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            placeholder="Write a reply..."
+          />
+          <div className="action-buttons">
+            <button 
+              className="btn btn-primary"
+              onClick={() => handleAddReply(comment.id)}
+            >
+              Reply
+            </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setReplyingTo(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      {!isReply && comment.replies.length > 0 && (
+        <div className="replies">
+          {comment.replies.map(reply => (
+            <Comment 
+              key={reply.id} 
+              comment={reply} 
+              isReply={true} 
+              parentId={comment.id}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="comments-section">
+      <div className="comment-input">
+        <textarea
+          className="comment-textarea"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Write a comment..."
+        />
+        <button 
+          className="btn btn-primary"
+          onClick={handleAddComment}
+        >
+          Add Comment
+        </button>
+      </div>
+      <div className="comments-list">
+        {comments.map(comment => (
+          <Comment key={comment.id} comment={comment} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const GameDetails = () => {
   const { id } = useParams();
@@ -71,47 +303,129 @@ const GameDetails = () => {
   return (
     <div className="game-details">
       <div className="game-container">
-        <GameHeader
-          game={game}
-          onToggleCart={toggleCart}
-          onToggleWishlist={toggleWishlist}
-        />
-
-        <GameTabs activeTab={activeTab} onTabChange={setActiveTab}>
-          <TabPanel tabId="description" label="Description">
-            <div className="game-description">
-              <p>{game.description}</p>
-              <h3>Features</h3>
-              <ul className="features-list">
-                {game.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </ul>
-              <div className="game-info-grid">
-                <div className="info-item">
-                  <h4>Developer</h4>
-                  <p>{game.developer}</p>
-                </div>
-                <div className="info-item">
-                  <h4>Publisher</h4>
-                  <p>{game.publisher}</p>
-                </div>
-                <div className="info-item">
-                  <h4>Platforms</h4>
-                  <p>{game.platforms.join(', ')}</p>
-                </div>
+        <div className="game-header">
+          <img src={game.image} alt={game.title} className="game-image" />
+          <div className="game-info">
+            <h1 className="game-title">{game.title}</h1>
+            <div className="game-meta">
+              <div className="meta-item">
+                <FaGamepad className="meta-icon" />
+                <span>{game.genre}</span>
+              </div>
+              <div className="meta-item">
+                <FaCalendar className="meta-icon" />
+                <span>{game.releaseDate}</span>
+              </div>
+              <div className="meta-item">
+                <FaUsers className="meta-icon" />
+                <span>{game.playerCount}</span>
+              </div>
+              <div className="meta-item">
+                <FaStar className="meta-icon" />
+                <span>{game.rating}</span>
               </div>
             </div>
-          </TabPanel>
+            <div className="game-price">
+              {game.discount > 0 && (
+                <>
+                  <span className="original-price">${game.price}</span>
+                  <span className="discount-badge">-{game.discount}%</span>
+                </>
+              )}
+              <span className="discounted-price">
+                ${(game.price * (1 - game.discount / 100)).toFixed(2)}
+              </span>
+            </div>
+            <div className="action-buttons">
+              <button 
+                className="btn btn-primary"
+                onClick={toggleCart}
+              >
+                <FaShoppingCart className="btn-icon" />
+                {game.inCart ? 'Remove from Cart' : 'Add to Cart'}
+              </button>
+              <button 
+                className="btn btn-secondary"
+                onClick={toggleWishlist}
+              >
+                <FaHeart 
+                  className={`btn-icon ${game.inWishlist ? 'active' : ''}`}
+                />
+                {game.inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+              </button>
+              <button className="btn btn-secondary">
+                <FaBell className="btn-icon" />
+                Set Alert
+              </button>
+              <button className="btn btn-secondary">
+                <FaDownload className="btn-icon" />
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
 
-          <TabPanel tabId="requirements" label="System Requirements">
-            <GameRequirements requirements={game.requirements} />
-          </TabPanel>
+        <div className="tabs">
+          <div className="tab-list">
+            <button 
+              className={`tab ${activeTab === 'description' ? 'active' : ''}`}
+              onClick={() => setActiveTab('description')}
+            >
+              Description
+            </button>
+            <button 
+              className={`tab ${activeTab === 'requirements' ? 'active' : ''}`}
+              onClick={() => setActiveTab('requirements')}
+            >
+              System Requirements
+            </button>
+            <button 
+              className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
+              onClick={() => setActiveTab('comments')}
+            >
+              Comments
+            </button>
+          </div>
 
-          <TabPanel tabId="comments" label="Comments">
-            <CommentSection gameId={game.id} />
-          </TabPanel>
-        </GameTabs>
+          <div className={`tab-panel ${activeTab === 'description' ? 'active' : ''}`}>
+            <p>{game.description}</p>
+            <h3>Features</h3>
+            <ul>
+              {game.features.map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className={`tab-panel ${activeTab === 'requirements' ? 'active' : ''}`}>
+            <div className="requirements">
+              <div className="minimum">
+                <h3>Minimum Requirements</h3>
+                <ul>
+                  <li>OS: {game.requirements.minimum.os}</li>
+                  <li>Processor: {game.requirements.minimum.processor}</li>
+                  <li>Memory: {game.requirements.minimum.memory}</li>
+                  <li>Graphics: {game.requirements.minimum.graphics}</li>
+                  <li>Storage: {game.requirements.minimum.storage}</li>
+                </ul>
+              </div>
+              <div className="recommended">
+                <h3>Recommended Requirements</h3>
+                <ul>
+                  <li>OS: {game.requirements.recommended.os}</li>
+                  <li>Processor: {game.requirements.recommended.processor}</li>
+                  <li>Memory: {game.requirements.recommended.memory}</li>
+                  <li>Graphics: {game.requirements.recommended.graphics}</li>
+                  <li>Storage: {game.requirements.recommended.storage}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className={`tab-panel ${activeTab === 'comments' ? 'active' : ''}`}>
+            <CommentSection gameId={id} />
+          </div>
+        </div>
       </div>
     </div>
   );

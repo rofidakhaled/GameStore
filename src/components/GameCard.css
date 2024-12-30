@@ -1,12 +1,9 @@
 .game-card {
-  background: var(--color-bg-secondary);
+  background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .game-card.store {
@@ -21,9 +18,8 @@
 .game-image-container {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 aspect ratio */
+  padding-top: 75%; /* Changed from 56.25% (16:9) to 75% (4:3) for a taller image */
   overflow: hidden;
-  background: var(--color-bg-tertiary);
 }
 
 .game-image {
@@ -44,8 +40,8 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: var(--color-error);
-  color: var(--color-text-inverse);
+  background: #ff4757;
+  color: white;
   padding: 4px 8px;
   border-radius: 4px;
   font-weight: bold;
@@ -53,17 +49,14 @@
 }
 
 .game-details {
-  padding: 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  padding: 15px;
 }
 
 .game-title {
-  margin: 0 0 0.75rem 0;
-  font-size: 1.1rem;
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
   font-weight: 600;
-  color: var(--color-text);
+  color: #2d3436;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,7 +66,7 @@
 .rating-container {
   display: flex;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 10px;
 }
 
 .rating-stars {
@@ -83,11 +76,11 @@
 }
 
 .star-icon {
-  color: var(--color-gold-500);
+  color: #ffd700;
 }
 
 .reviews-count {
-  color: var(--color-text-secondary);
+  color: #7f8c8d;
   font-size: 0.9em;
   margin-left: 5px;
 }
@@ -96,8 +89,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto;
-  padding-top: 0.75rem;
+  margin-top: 10px;
 }
 
 .price-tag {
@@ -107,12 +99,12 @@
 
 .original-price {
   text-decoration: line-through;
-  color: var(--color-text-secondary);
+  color: #7f8c8d;
   font-size: 0.9em;
 }
 
 .discounted-price {
-  color: var(--color-success);
+  color: #2ecc71;
   font-weight: bold;
   font-size: 1.1em;
 }
@@ -125,47 +117,32 @@
 .action-icon {
   cursor: pointer;
   font-size: 1.2em;
-  color: var(--color-text-secondary);
-  transition: all 0.2s ease;
-  padding: 8px;
-  border-radius: 50%;
-  background: transparent;
+  color: #7f8c8d;
+  transition: color 0.2s ease;
 }
 
 .action-icon:hover {
-  color: var(--color-text);
-  background: var(--color-bg-hover);
+  color: #2d3436;
 }
 
 .action-icon.cart.active {
-  color: var(--color-success);
-  background: var(--color-success-bg);
+  color: #2ecc71;
 }
 
 .action-icon.wishlist.active {
-  color: var(--color-error);
-  background: var(--color-error-bg);
+  color: #ff4757;
 }
 
 .action-icon.rate:hover {
-  color: var(--color-gold-500);
-  background: var(--color-gold-100);
+  color: #ffd700;
 }
 
 /* Library variant styles */
-.game-card.library {
-  background: var(--color-bg-secondary);
-}
-
-.game-card.library .game-image-container {
-  padding-top: 66.67%; /* 3:2 aspect ratio for library view */
-}
-
 .game-card.library .game-actions {
   position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
   display: flex;
   justify-content: center;
   opacity: 0;
@@ -182,26 +159,26 @@
   gap: 8px;
   padding: 8px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  background: var(--color-bg-secondary);
-  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.9);
+  color: #2d3436;
   transition: all 0.2s ease;
 }
 
 .action-button:hover {
-  background: var(--color-bg-hover);
+  background: #fff;
   transform: translateY(-2px);
 }
 
 .action-button.primary {
-  background: var(--color-success);
-  color: var(--color-text-inverse);
+  background: rgba(46, 204, 113, 0.9);
+  color: white;
 }
 
 .action-button.primary:hover {
-  background: var(--color-success-dark);
+  background: rgb(46, 204, 113);
 }
 
 .game-meta {
@@ -215,25 +192,46 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-text-secondary);
+  color: #7f8c8d;
   font-size: 0.9em;
 }
 
 .meta-icon {
   font-size: 1.1em;
-  color: var(--color-text-secondary);
 }
 
-@media (max-width: 768px) {
-  .game-image-container {
-    padding-top: 66.67%; /* 3:2 aspect ratio for mobile */
-  }
+.game-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
 
-  .game-details {
-    padding: 0.75rem;
-  }
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
 
-  .game-title {
-    font-size: 1rem;
-  }
+.status-badge.installed {
+  background: #e8f5e9;
+  color: #2ecc71;
+}
+
+.status-badge.not-installed {
+  background: #f8f9fa;
+  color: #7f8c8d;
+}
+
+.last-played {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+.additional-info {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #7f8c8d;
 }

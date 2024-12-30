@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaBell, FaHeart, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import axios from 'axios';
 import { gameCoverImages, bannerImages } from '../assets/images';
 import '../styles/Store.css';
 import GameCard from '../components/GameCard';
-import Modal from '../components/Modal/Modal';
-import Rating from '../components/Rating/Rating';
 
 const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
   const [rating, setRating] = useState(selectedGame?.rating || 0);
@@ -18,20 +16,22 @@ const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
     setReview('');
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Rate ${selectedGame?.name}`}
-      size="sm"
-    >
-      <div className="rating-modal-content">
-        <Rating
-          value={rating}
-          onChange={setRating}
-          size="lg"
-          showValue
-        />
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="modal-close" onClick={onClose}>&times;</button>
+        <h2 className="modal-title">Rate {selectedGame?.name}</h2>
+        <div className="rating-stars">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <FaStar
+              key={value}
+              className={`star ${value <= rating ? 'active' : ''}`}
+              onClick={() => setRating(value)}
+            />
+          ))}
+        </div>
         <textarea
           className="review-textarea"
           value={review}
@@ -42,7 +42,7 @@ const RatingModal = ({ isOpen, onClose, selectedGame, onSubmit }) => {
           Submit Review
         </button>
       </div>
-    </Modal>
+    </div>
   );
 };
 
@@ -186,9 +186,9 @@ const Store = () => {
           <GameCard
             key={game.id}
             game={game}
-            onRate={(game) => handleRateGame(game, { stopPropagation: () => {} })}
-            onWishlistToggle={(game) => handleToggleWishlist(game, { stopPropagation: () => {} })}
             onCartToggle={(game) => handleToggleCart(game, { stopPropagation: () => {} })}
+            onWishlistToggle={(game) => handleToggleWishlist(game, { stopPropagation: () => {} })}
+            onRate={(game) => handleRateGame(game, { stopPropagation: () => {} })}
           />
         ))}
       </div>

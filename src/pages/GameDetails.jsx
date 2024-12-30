@@ -7,241 +7,19 @@ import {
   FaDownload, 
   FaUsers, 
   FaCalendar, 
-  FaGamepad,
-  FaThumbsUp,
-  FaReply,
-  FaEllipsisV,
+  FaGamepad
 } from 'react-icons/fa';
+import { 
+  Rating, 
+  Modal, 
+  CommentThread 
+} from '../components/shared';
 import '../styles/GameDetails.css';
-import Rating from '../components/Rating/Rating';
-import Comment from '../components/Comments/Comment';
-
-const CommentSection = ({ gameId }) => {
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      user: {
-        name: 'John Doe',
-        avatar: 'https://via.placeholder.com/40x40?text=JD',
-        isVerified: true,
-      },
-      content: 'This game is absolutely amazing! The graphics and gameplay are top-notch.',
-      timestamp: '2024-12-26T20:00:00',
-      likes: 15,
-      replies: [
-        {
-          id: 2,
-          user: {
-            name: 'Jane Smith',
-            avatar: 'https://via.placeholder.com/40x40?text=JS',
-            isVerified: false,
-          },
-          content: 'I agree! The story is particularly engaging.',
-          timestamp: '2024-12-26T20:30:00',
-          likes: 5,
-        }
-      ]
-    },
-    {
-      id: 3,
-      user: {
-        name: 'Mike Wilson',
-        avatar: 'https://via.placeholder.com/40x40?text=MW',
-        isVerified: false,
-      },
-      content: 'The multiplayer mode is really fun with friends. Highly recommended!',
-      timestamp: '2024-12-26T19:00:00',
-      likes: 8,
-      replies: []
-    }
-  ]);
-  const [newComment, setNewComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null);
-  const [replyContent, setReplyContent] = useState('');
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-
-    const comment = {
-      id: Date.now(),
-      user: {
-        name: 'Current User',
-        avatar: 'https://via.placeholder.com/40x40?text=CU',
-        isVerified: true,
-      },
-      content: newComment,
-      timestamp: new Date().toISOString(),
-      likes: 0,
-      replies: []
-    };
-
-    setComments([comment, ...comments]);
-    setNewComment('');
-  };
-
-  const handleAddReply = (commentId) => {
-    if (!replyContent.trim()) return;
-
-    const reply = {
-      id: Date.now(),
-      user: {
-        name: 'Current User',
-        avatar: 'https://via.placeholder.com/40x40?text=CU',
-        isVerified: true,
-      },
-      content: replyContent,
-      timestamp: new Date().toISOString(),
-      likes: 0,
-    };
-
-    setComments(comments.map(comment => 
-      comment.id === commentId
-        ? { ...comment, replies: [...comment.replies, reply] }
-        : comment
-    ));
-
-    setReplyingTo(null);
-    setReplyContent('');
-  };
-
-  const handleLike = (commentId, isReply = false, parentId = null) => {
-    if (isReply) {
-      setComments(comments.map(comment => 
-        comment.id === parentId
-          ? {
-              ...comment,
-              replies: comment.replies.map(reply =>
-                reply.id === commentId
-                  ? { ...reply, likes: reply.likes + 1 }
-                  : reply
-              )
-            }
-          : comment
-      ));
-    } else {
-      setComments(comments.map(comment =>
-        comment.id === commentId
-          ? { ...comment, likes: comment.likes + 1 }
-          : comment
-      ));
-    }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const Comment = ({ comment, isReply = false, parentId = null }) => (
-    <div className="comment">
-      <div className="comment-header">
-        <div className="comment-user">
-          <img 
-            src={comment.user.avatar} 
-            alt={comment.user.name} 
-            className="user-avatar"
-          />
-          <div>
-            <span className="user-name">{comment.user.name}</span>
-            {comment.user.isVerified && (
-              <span className="verified-badge">Verified</span>
-            )}
-          </div>
-          <span className="comment-timestamp">
-            {formatTimestamp(comment.timestamp)}
-          </span>
-        </div>
-      </div>
-      <div className="comment-content">{comment.content}</div>
-      <div className="comment-actions">
-        <button 
-          className="action-button"
-          onClick={() => handleLike(comment.id, isReply, parentId)}
-        >
-          <FaThumbsUp /> {comment.likes}
-        </button>
-        {!isReply && (
-          <button 
-            className="action-button"
-            onClick={() => setReplyingTo(comment.id)}
-          >
-            <FaReply /> Reply
-          </button>
-        )}
-      </div>
-      {replyingTo === comment.id && (
-        <div className="reply-input">
-          <textarea
-            className="comment-textarea"
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            placeholder="Write a reply..."
-          />
-          <div className="action-buttons">
-            <button 
-              className="btn btn-primary"
-              onClick={() => handleAddReply(comment.id)}
-            >
-              Reply
-            </button>
-            <button 
-              className="btn btn-secondary"
-              onClick={() => setReplyingTo(null)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      {!isReply && comment.replies.length > 0 && (
-        <div className="replies">
-          {comment.replies.map(reply => (
-            <Comment 
-              key={reply.id} 
-              comment={reply} 
-              isReply={true} 
-              parentId={comment.id}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
-  return (
-    <div className="comments-section">
-      <div className="comment-input">
-        <textarea
-          className="comment-textarea"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Write a comment..."
-        />
-        <button 
-          className="btn btn-primary"
-          onClick={handleAddComment}
-        >
-          Add Comment
-        </button>
-      </div>
-      <div className="comments-list">
-        {comments.map(comment => (
-          <Comment key={comment.id} comment={comment} />
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const GameDetails = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('description');
+  const [showRequirementsModal, setShowRequirementsModal] = useState(false);
   const [game, setGame] = useState({
     id: 1,
     title: 'Cyberpunk 2077',
@@ -277,6 +55,37 @@ const GameDetails = () => {
     inCart: false
   });
 
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      user: {
+        id: 'user1',
+        name: 'John Doe',
+        avatar: 'https://via.placeholder.com/40x40?text=JD',
+        isVerified: true,
+      },
+      content: 'This game is absolutely amazing! The graphics and gameplay are top-notch.',
+      timestamp: '2024-12-26T20:00:00',
+      likes: 15,
+      liked: false,
+      replies: [
+        {
+          id: 2,
+          user: {
+            id: 'user2',
+            name: 'Jane Smith',
+            avatar: 'https://via.placeholder.com/40x40?text=JS',
+            isVerified: false,
+          },
+          content: 'I agree! The story is particularly engaging.',
+          timestamp: '2024-12-26T20:30:00',
+          likes: 5,
+          liked: false,
+        }
+      ]
+    }
+  ]);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -291,83 +100,99 @@ const GameDetails = () => {
     setGame(prev => ({ ...prev, inWishlist: !prev.inWishlist }));
   };
 
-  const toggleCart = () => {
-    setGame(prev => ({ ...prev, inCart: !prev.inCart }));
+  const handleRatingChange = (newRating) => {
+    setGame(prev => ({ ...prev, rating: newRating }));
+    // Here you would typically make an API call to update the rating
   };
 
-  if (loading) {
-    return (
-      <div className="loading">Loading...</div>
-    );
-  }
+  const handleCommentLike = (commentId) => {
+    setComments(prevComments => {
+      const updateComment = (comment) => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            likes: comment.liked ? comment.likes - 1 : comment.likes + 1,
+            liked: !comment.liked
+          };
+        }
+        if (comment.replies) {
+          return {
+            ...comment,
+            replies: comment.replies.map(reply => updateComment(reply))
+          };
+        }
+        return comment;
+      };
+      
+      return prevComments.map(comment => updateComment(comment));
+    });
+  };
+
+  const handleCommentReply = (commentId) => {
+    // Implement reply functionality
+    console.log('Reply to comment:', commentId);
+  };
+
+  const handleCommentDelete = (commentId) => {
+    setComments(prevComments => {
+      const filterComments = (comments) => 
+        comments.filter(comment => {
+          if (comment.id === commentId) return false;
+          if (comment.replies) {
+            comment.replies = filterComments(comment.replies);
+          }
+          return true;
+        });
+      
+      return filterComments(prevComments);
+    });
+  };
 
   return (
     <div className="game-details">
-      <div className="game-container">
-        <div className="game-header">
-          <img src={game.image} alt={game.title} className="game-image" />
-          <div className="game-info">
-            <h1 className="game-title">{game.title}</h1>
-            <div className="game-meta">
-              <div className="meta-item">
-                <FaGamepad className="meta-icon" />
-                <span>{game.genre}</span>
-              </div>
-              <div className="meta-item">
-                <FaCalendar className="meta-icon" />
-                <span>{game.releaseDate}</span>
-              </div>
-              <div className="meta-item">
-                <FaUsers className="meta-icon" />
-                <span>{game.playerCount}</span>
-              </div>
-              <div className="meta-item">
-                <FaStar className="meta-icon" />
-                <span>{game.rating}</span>
-              </div>
-            </div>
-            <div className="game-price">
-              {game.discount > 0 && (
-                <>
-                  <span className="original-price">${game.price}</span>
-                  <span className="discount-badge">-{game.discount}%</span>
-                </>
-              )}
-              <span className="discounted-price">
-                ${(game.price * (1 - game.discount / 100)).toFixed(2)}
-              </span>
-            </div>
-            <div className="action-buttons">
-              <button 
-                className="btn btn-primary"
-                onClick={toggleCart}
-              >
-                <FaShoppingCart className="btn-icon" />
-                {game.inCart ? 'Remove from Cart' : 'Add to Cart'}
-              </button>
-              <button 
-                className="btn btn-secondary"
-                onClick={toggleWishlist}
-              >
-                <FaHeart 
-                  className={`btn-icon ${game.inWishlist ? 'active' : ''}`}
+      {loading ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <>
+          <div className="game-header">
+            <img src={game.image} alt={game.title} className="game-image" />
+            <div className="game-info">
+              <h1>{game.title}</h1>
+              <div className="rating-section">
+                <Rating 
+                  value={game.rating} 
+                  onChange={handleRatingChange} 
+                  size="lg"
+                  readOnly={false}
                 />
-                {game.inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
-              </button>
-              <button className="btn btn-secondary">
-                <FaBell className="btn-icon" />
-                Set Alert
-              </button>
-              <button className="btn btn-secondary">
-                <FaDownload className="btn-icon" />
-                Download
-              </button>
+                <span className="rating-value">{game.rating.toFixed(1)}</span>
+              </div>
+              <div className="price-section">
+                {game.discount > 0 && (
+                  <span className="discount">-{game.discount}%</span>
+                )}
+                <span className="price">
+                  ${(game.price * (1 - game.discount / 100)).toFixed(2)}
+                </span>
+                {game.discount > 0 && (
+                  <span className="original-price">${game.price.toFixed(2)}</span>
+                )}
+              </div>
+              <div className="action-buttons">
+                <button className="primary-button">
+                  <FaShoppingCart /> Add to Cart
+                </button>
+                <button 
+                  className={`wishlist-button ${game.inWishlist ? 'active' : ''}`}
+                  onClick={toggleWishlist}
+                >
+                  <FaHeart />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="tabs">
-          <div className="tab-list">
+          <div className="game-tabs">
             <button 
               className={`tab ${activeTab === 'description' ? 'active' : ''}`}
               onClick={() => setActiveTab('description')}
@@ -376,9 +201,9 @@ const GameDetails = () => {
             </button>
             <button 
               className={`tab ${activeTab === 'requirements' ? 'active' : ''}`}
-              onClick={() => setActiveTab('requirements')}
+              onClick={() => setShowRequirementsModal(true)}
             >
-              System Requirements
+              Requirements
             </button>
             <button 
               className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
@@ -388,46 +213,82 @@ const GameDetails = () => {
             </button>
           </div>
 
-          <div className={`tab-panel ${activeTab === 'description' ? 'active' : ''}`}>
-            <p>{game.description}</p>
-            <h3>Features</h3>
-            <ul>
-              {game.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
+          <div className="tab-content">
+            {activeTab === 'description' && (
+              <div className="description-tab">
+                <p>{game.description}</p>
+                <div className="game-details-grid">
+                  <div className="detail-item">
+                    <FaCalendar className="detail-icon" />
+                    <div className="detail-content">
+                      <h3>Release Date</h3>
+                      <p>{game.releaseDate}</p>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <FaGamepad className="detail-icon" />
+                    <div className="detail-content">
+                      <h3>Developer</h3>
+                      <p>{game.developer}</p>
+                    </div>
+                  </div>
+                  <div className="detail-item">
+                    <FaUsers className="detail-icon" />
+                    <div className="detail-content">
+                      <h3>Publisher</h3>
+                      <p>{game.publisher}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'comments' && (
+              <div className="comments-section">
+                {comments.map(comment => (
+                  <CommentThread
+                    key={comment.id}
+                    comment={comment}
+                    onReply={handleCommentReply}
+                    onLike={handleCommentLike}
+                    onDelete={handleCommentDelete}
+                    currentUserId="user1"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className={`tab-panel ${activeTab === 'requirements' ? 'active' : ''}`}>
-            <div className="requirements">
-              <div className="minimum">
+          <Modal
+            isOpen={showRequirementsModal}
+            onClose={() => setShowRequirementsModal(false)}
+            title="System Requirements"
+          >
+            <div className="requirements-content">
+              <div className="requirements-section">
                 <h3>Minimum Requirements</h3>
                 <ul>
-                  <li>OS: {game.requirements.minimum.os}</li>
-                  <li>Processor: {game.requirements.minimum.processor}</li>
-                  <li>Memory: {game.requirements.minimum.memory}</li>
-                  <li>Graphics: {game.requirements.minimum.graphics}</li>
-                  <li>Storage: {game.requirements.minimum.storage}</li>
+                  <li><strong>OS:</strong> {game.requirements.minimum.os}</li>
+                  <li><strong>Processor:</strong> {game.requirements.minimum.processor}</li>
+                  <li><strong>Memory:</strong> {game.requirements.minimum.memory}</li>
+                  <li><strong>Graphics:</strong> {game.requirements.minimum.graphics}</li>
+                  <li><strong>Storage:</strong> {game.requirements.minimum.storage}</li>
                 </ul>
               </div>
-              <div className="recommended">
+              <div className="requirements-section">
                 <h3>Recommended Requirements</h3>
                 <ul>
-                  <li>OS: {game.requirements.recommended.os}</li>
-                  <li>Processor: {game.requirements.recommended.processor}</li>
-                  <li>Memory: {game.requirements.recommended.memory}</li>
-                  <li>Graphics: {game.requirements.recommended.graphics}</li>
-                  <li>Storage: {game.requirements.recommended.storage}</li>
+                  <li><strong>OS:</strong> {game.requirements.recommended.os}</li>
+                  <li><strong>Processor:</strong> {game.requirements.recommended.processor}</li>
+                  <li><strong>Memory:</strong> {game.requirements.recommended.memory}</li>
+                  <li><strong>Graphics:</strong> {game.requirements.recommended.graphics}</li>
+                  <li><strong>Storage:</strong> {game.requirements.recommended.storage}</li>
                 </ul>
               </div>
             </div>
-          </div>
-
-          <div className={`tab-panel ${activeTab === 'comments' ? 'active' : ''}`}>
-            <CommentSection gameId={id} />
-          </div>
-        </div>
-      </div>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };
